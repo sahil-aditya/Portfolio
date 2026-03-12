@@ -94,11 +94,11 @@ export function ProfileHeader({
             </div>
             <div>
               <label className="block text-xs mb-1">[BIO]</label>
-              <input
-                type="text"
+              <textarea
                 value={editBio}
                 onChange={(e) => setEditBio(e.target.value)}
-                className="w-full px-3 py-2 bg-background border border-foreground text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
+                className="w-full px-3 py-2 bg-background border border-foreground text-sm focus:outline-none focus:ring-1 focus:ring-foreground resize-none"
+                rows={3}
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -155,7 +155,7 @@ export function ProfileHeader({
         {/* Info */}
         <div className="flex-1 text-center md:text-left">
           <h2 className="text-lg md:text-xl mb-2">{name}</h2>
-          <p className="text-xs md:text-sm text-muted-foreground mb-4">{bio}</p>
+          <p className="text-xs md:text-sm text-muted-foreground mb-4 whitespace-pre-wrap">{bio}</p>
 
           {/* Interactive Icons - Only visible to owner */}
           {isOwner && (

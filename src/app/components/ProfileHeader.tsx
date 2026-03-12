@@ -157,25 +157,27 @@ export function ProfileHeader({
           <h2 className="text-lg md:text-xl mb-2">{name}</h2>
           <p className="text-xs md:text-sm text-muted-foreground mb-4">{bio}</p>
 
-          {/* Interactive Icons */}
-          <div className="flex items-center justify-center md:justify-start gap-3">
-            <button
-              onClick={handleWebsiteClick}
-              className="flex items-center gap-2 px-3 py-2 border border-foreground hover:bg-foreground hover:text-background transition-colors text-xs"
-              title={websiteUrl || "Add website"}
-            >
-              <Globe className="w-4 h-4" />
-              {websiteUrl ? "[WEBSITE]" : "[ADD WEBSITE]"}
-            </button>
-            <button
-              onClick={handleEmailClick}
-              className="flex items-center gap-2 px-3 py-2 border border-foreground hover:bg-foreground hover:text-background transition-colors text-xs"
-              title={emailUrl || "Add email"}
-            >
-              <Mail className="w-4 h-4" />
-              {emailUrl ? "[EMAIL]" : "[ADD EMAIL]"}
-            </button>
-          </div>
+          {/* Interactive Icons - Only visible to owner */}
+          {isOwner && (
+            <div className="flex items-center justify-center md:justify-start gap-3">
+              <button
+                onClick={handleWebsiteClick}
+                className="flex items-center gap-2 px-3 py-2 border border-foreground hover:bg-foreground hover:text-background transition-colors text-xs"
+                title={websiteUrl || "Add website"}
+              >
+                <Globe className="w-4 h-4" />
+                {websiteUrl ? "[WEBSITE]" : "[ADD WEBSITE]"}
+              </button>
+              <button
+                onClick={handleEmailClick}
+                className="flex items-center gap-2 px-3 py-2 border border-foreground hover:bg-foreground hover:text-background transition-colors text-xs"
+                title={emailUrl || "Add email"}
+              >
+                <Mail className="w-4 h-4" />
+                {emailUrl ? "[EMAIL]" : "[ADD EMAIL]"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

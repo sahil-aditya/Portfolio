@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Lock, Unlock } from "lucide-react";
 import { useOwnership } from "../context/OwnershipContext";
 
-const OWNER_PASSWORD = "admin"; // Simple password for demo - in production, use proper auth
+const OWNER_PASSWORD = "120104"; // Simple password for demo - in production, use proper auth
 
 export function OwnershipToggle() {
   const { isOwner, setIsOwner } = useOwnership();
@@ -54,7 +54,7 @@ export function OwnershipToggle() {
         ) : (
           <>
             <Lock className="w-3 h-3" />
-            [VISITOR]
+            [LOGIN]
           </>
         )}
       </button>

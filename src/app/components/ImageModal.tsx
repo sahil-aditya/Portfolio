@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { GalleryPost } from "./GalleryCard";
@@ -84,27 +84,6 @@ export function ImageModal({ post, onClose }: ImageModalProps) {
                 {post.description && (
                   <p className="text-xs text-muted-foreground">{post.description}</p>
                 )}
-              </div>
-
-              {/* Navigation */}
-              <div className="flex items-center justify-center gap-4 bg-background border-b-2 border-foreground border-x-2 p-4">
-                <button
-                  onClick={() => setShowAfter(!showAfter)}
-                  className="flex items-center gap-2 px-4 py-2 border border-foreground hover:bg-foreground hover:text-background transition-colors text-xs"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  {showAfter ? "BEFORE" : "AFTER"}
-                </button>
-                <span className="text-xs text-muted-foreground">
-                  {showAfter ? "AFTER" : "BEFORE"}
-                </span>
-                <button
-                  onClick={() => setShowAfter(!showAfter)}
-                  className="flex items-center gap-2 px-4 py-2 border border-foreground hover:bg-foreground hover:text-background transition-colors text-xs"
-                >
-                  {showAfter ? "BEFORE" : "AFTER"}
-                  <ChevronRight className="w-4 h-4" />
-                </button>
               </div>
             </div>
           </motion.div>

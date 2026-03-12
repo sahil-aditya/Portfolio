@@ -157,27 +157,39 @@ export function ProfileHeader({
           <h2 className="text-lg md:text-xl mb-2">{name}</h2>
           <p className="text-xs md:text-sm text-muted-foreground mb-4 whitespace-pre-wrap">{bio}</p>
 
-          {/* Interactive Icons - Only visible to owner */}
-          {isOwner && (
-            <div className="flex items-center justify-center md:justify-start gap-3">
-              <button
-                onClick={handleWebsiteClick}
-                className="flex items-center gap-2 px-3 py-2 border border-foreground hover:bg-foreground hover:text-background transition-colors text-xs"
-                title={websiteUrl || "Add website"}
-              >
-                <Globe className="w-4 h-4" />
-                {websiteUrl ? "[WEBSITE]" : "[ADD WEBSITE]"}
-              </button>
-              <button
-                onClick={handleEmailClick}
-                className="flex items-center gap-2 px-3 py-2 border border-foreground hover:bg-foreground hover:text-background transition-colors text-xs"
-                title={emailUrl || "Add email"}
-              >
-                <Mail className="w-4 h-4" />
-                {emailUrl ? "[EMAIL]" : "[ADD EMAIL]"}
-              </button>
-            </div>
-          )}
+          {/* Interactive Icons - Visible to all, editable only for owner */}
+          <div className="flex items-center justify-center md:justify-start gap-3">
+            <button
+              onClick={handleWebsiteClick}
+              className={`flex items-center gap-2 px-3 py-2 border border-foreground transition-colors text-xs ${
+                websiteUrl
+                  ? "hover:bg-foreground hover:text-background cursor-pointer"
+                  : isOwner
+                  ? "hover:bg-foreground hover:text-background cursor-pointer"
+                  : "opacity-50 cursor-not-allowed"
+              }`}
+              title={websiteUrl || (isOwner ? "Add website" : "No website added")}
+              disabled={!websiteUrl && !isOwner}
+            >
+              <Globe className="w-4 h-4" />
+              {websiteUrl ? "[WEBSITE]" : isOwner ? "[ADD WEBSITE]" : "[NO WEBSITE]"}
+            </button>
+            <button
+              onClick={handleEmailClick}
+              className={`flex items-center gap-2 px-3 py-2 border border-foreground transition-colors text-xs ${
+                emailUrl
+                  ? "hover:bg-foreground hover:text-background cursor-pointer"
+                  : isOwner
+                  ? "hover:bg-foreground hover:text-background cursor-pointer"
+                  : "opacity-50 cursor-not-allowed"
+              }`}
+              title={emailUrl || (isOwner ? "Add email" : "No email added")}
+              disabled={!emailUrl && !isOwner}
+            >
+              <Mail className="w-4 h-4" />
+              {emailUrl ? "[EMAIL]" : isOwner ? "[ADD EMAIL]" : "[NO EMAIL]"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

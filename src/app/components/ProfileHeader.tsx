@@ -158,7 +158,7 @@ export function ProfileHeader({
           <p className="text-xs md:text-sm text-muted-foreground mb-4 whitespace-pre-wrap">{bio}</p>
 
           {/* Interactive Icons - Visible to all, editable only for owner */}
-          <div className="flex items-center justify-start gap-3">
+          <div className="flex items-center justify-start gap-3 mt-4">
             <button
               onClick={handleWebsiteClick}
               className={`flex items-center gap-2 px-3 py-2 border border-foreground transition-colors text-xs ${

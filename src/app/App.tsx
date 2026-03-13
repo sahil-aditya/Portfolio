@@ -115,7 +115,7 @@ function AppContent() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 mt-8">
           {posts.map((post) => (
             <GalleryCard
               key={post.id}

@@ -138,6 +138,29 @@
   }
 }
 
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translateY(-15px) translateX(8px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-25px) translateX(-10px);
+    opacity: 0.35;
+  }
+  75% {
+    transform: translateY(-15px) translateX(12px);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.4;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

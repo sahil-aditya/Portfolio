@@ -132,10 +132,19 @@ export function ProfileHeader({
   return (
     <div className="w-full aspect-[3/2] border-2 border-foreground bg-background p-6 md:p-8 relative group overflow-hidden">
       {/* Floating Blur Blobs - Dark Blue Liquid */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Large Liquid Blobs */}
         <div className="absolute -top-32 -left-32 w-64 h-64 rounded-full blur-3xl" style={{ background: 'rgba(30, 58, 138, 0.15)', animation: 'liquidFloat 12s ease-in-out infinite' }} />
         <div className="absolute top-20 left-1/4 w-48 h-48 rounded-full blur-2xl" style={{ background: 'rgba(25, 45, 120, 0.12)', animation: 'liquidFloat 14s ease-in-out infinite 1s' }} />
         <div className="absolute bottom-10 right-10 w-56 h-56 rounded-full blur-3xl" style={{ background: 'rgba(35, 70, 160, 0.18)', animation: 'liquidFloat 16s ease-in-out infinite 2s' }} />
+
+        {/* Small Thick Liquid Particles */}
+        <div className="absolute top-1/4 left-1/3 w-6 h-6 rounded-full" style={{ background: 'rgba(50, 100, 200, 0.4)', filter: 'blur(1px)', animation: 'particleFloat 6s ease-in-out infinite' }} />
+        <div className="absolute top-1/3 left-1/2 w-4 h-4 rounded-full" style={{ background: 'rgba(45, 90, 180, 0.35)', filter: 'blur(0.5px)', animation: 'particleFloat 8s ease-in-out infinite 1s' }} />
+        <div className="absolute top-1/2 right-1/4 w-5 h-5 rounded-full" style={{ background: 'rgba(55, 110, 220, 0.38)', filter: 'blur(1px)', animation: 'particleFloat 7s ease-in-out infinite 0.5s' }} />
+        <div className="absolute bottom-1/4 left-1/4 w-3 h-3 rounded-full" style={{ background: 'rgba(40, 80, 170, 0.42)', filter: 'blur(0.5px)', animation: 'particleFloat 9s ease-in-out infinite 1.5s' }} />
+        <div className="absolute bottom-1/3 right-1/3 w-4 h-4 rounded-full" style={{ background: 'rgba(60, 120, 230, 0.36)', filter: 'blur(1px)', animation: 'particleFloat 6.5s ease-in-out infinite 2s' }} />
+        <div className="absolute top-2/3 left-1/5 w-5 h-5 rounded-full" style={{ background: 'rgba(35, 75, 160, 0.39)', filter: 'blur(0.5px)', animation: 'particleFloat 8.5s ease-in-out infinite 0.7s' }} />
       </div>
 
       {/* Content */}

@@ -131,11 +131,11 @@ export function ProfileHeader({
 
   return (
     <div className="w-full aspect-[3/2] border-2 border-foreground bg-background p-6 md:p-8 relative group overflow-hidden">
-      {/* Floating Blur Blobs */}
+      {/* Floating Blur Blobs - Dark Blue Liquid */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-64 h-64 bg-foreground/10 rounded-full blur-3xl" style={{ animation: 'float 8s ease-in-out infinite' }} />
-        <div className="absolute top-20 left-1/4 w-48 h-48 bg-foreground/5 rounded-full blur-2xl" style={{ animation: 'float 10s ease-in-out infinite 1s' }} />
-        <div className="absolute bottom-10 right-10 w-56 h-56 bg-foreground/8 rounded-full blur-3xl" style={{ animation: 'float 12s ease-in-out infinite 2s' }} />
+        <div className="absolute -top-32 -left-32 w-64 h-64 rounded-full blur-3xl" style={{ background: 'rgba(30, 58, 138, 0.15)', animation: 'liquidFloat 12s ease-in-out infinite' }} />
+        <div className="absolute top-20 left-1/4 w-48 h-48 rounded-full blur-2xl" style={{ background: 'rgba(25, 45, 120, 0.12)', animation: 'liquidFloat 14s ease-in-out infinite 1s' }} />
+        <div className="absolute bottom-10 right-10 w-56 h-56 rounded-full blur-3xl" style={{ background: 'rgba(35, 70, 160, 0.18)', animation: 'liquidFloat 16s ease-in-out infinite 2s' }} />
       </div>
 
       {/* Content */}

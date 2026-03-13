@@ -119,18 +119,22 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
+@keyframes liquidFloat {
+  0% {
+    transform: translateY(0px) translateX(0px) scale(1);
+    filter: blur(var(--blur-amount, 60px));
   }
   25% {
-    transform: translateY(-20px) translateX(10px);
+    transform: translateY(-30px) translateX(15px) scale(1.05);
   }
   50% {
-    transform: translateY(-40px) translateX(-10px);
+    transform: translateY(-50px) translateX(-20px) scale(0.98);
   }
   75% {
-    transform: translateY(-20px) translateX(15px);
+    transform: translateY(-30px) translateX(25px) scale(1.02);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) scale(1);
   }
 }
 

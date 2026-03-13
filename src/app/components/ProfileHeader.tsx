@@ -153,12 +153,12 @@ export function ProfileHeader({
         </div>
 
         {/* Info */}
-        <div className="flex-1 text-center md:text-left">
+        <div className="flex-1 text-left">
           <h2 className="text-lg md:text-xl mb-2">{name}</h2>
           <p className="text-xs md:text-sm text-muted-foreground mb-4 whitespace-pre-wrap">{bio}</p>
 
           {/* Interactive Icons - Visible to all, editable only for owner */}
-          <div className="flex items-center justify-center md:justify-start gap-3">
+          <div className="flex items-center justify-start gap-3">
             <button
               onClick={handleWebsiteClick}
               className={`flex items-center gap-2 px-3 py-2 border border-foreground transition-colors text-xs ${

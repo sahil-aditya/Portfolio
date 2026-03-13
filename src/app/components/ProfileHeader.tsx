@@ -134,16 +134,50 @@ export function ProfileHeader({
       {isOwner && (
         <button
           onClick={() => setIsEditing(true)}
-          className="absolute top-4 right-4 p-2 border border-foreground hover:bg-foreground hover:text-background transition-colors opacity-0 group-hover:opacity-100"
+          className="absolute bottom-6 right-6 md:bottom-8 md:right-8 p-2 border border-foreground hover:bg-foreground hover:text-background transition-colors opacity-0 group-hover:opacity-100"
         >
           <Edit2 className="w-4 h-4" />
         </button>
       )}
 
-      <div className="h-full flex flex-col md:flex-row items-center gap-6">
+      {/* Website and Email - Top Right Corner */}
+      <div className="absolute top-6 right-6 md:top-8 md:right-8 flex flex-col gap-2">
+        <button
+          onClick={handleWebsiteClick}
+          className={`flex items-center gap-1 px-2 py-1 border border-foreground transition-colors text-[10px] ${
+            websiteUrl
+              ? "hover:bg-foreground hover:text-background cursor-pointer"
+              : isOwner
+              ? "hover:bg-foreground hover:text-background cursor-pointer"
+              : "opacity-50 cursor-not-allowed"
+          }`}
+          title={websiteUrl || (isOwner ? "Add website" : "No website added")}
+          disabled={!websiteUrl && !isOwner}
+        >
+          <Globe className="w-3 h-3" />
+          <span>{websiteUrl ? "[WEBSITE]" : isOwner ? "[ADD]" : "[NONE]"}</span>
+        </button>
+        <button
+          onClick={handleEmailClick}
+          className={`flex items-center gap-1 px-2 py-1 border border-foreground transition-colors text-[10px] ${
+            emailUrl
+              ? "hover:bg-foreground hover:text-background cursor-pointer"
+              : isOwner
+              ? "hover:bg-foreground hover:text-background cursor-pointer"
+              : "opacity-50 cursor-not-allowed"
+          }`}
+          title={emailUrl || (isOwner ? "Add email" : "No email added")}
+          disabled={!emailUrl && !isOwner}
+        >
+          <Mail className="w-3 h-3" />
+          <span>{emailUrl ? "[EMAIL]" : isOwner ? "[ADD]" : "[NONE]"}</span>
+        </button>
+      </div>
+
+      <div className="h-full flex flex-col md:flex-row items-start md:items-center gap-6">
         {/* Profile Picture */}
         <div className="flex-shrink-0">
-          <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-foreground overflow-hidden">
+          <div className="w-20 h-20 md:w-28 md:h-28 rounded-full border-2 border-foreground overflow-hidden">
             <ImageWithFallback
               src={profileImage}
               alt={name}
@@ -155,41 +189,7 @@ export function ProfileHeader({
         {/* Info */}
         <div className="flex-1 text-left">
           <h2 className="text-lg md:text-xl mb-2">{name}</h2>
-          <p className="text-xs md:text-sm text-muted-foreground mb-4 whitespace-pre-wrap">{bio}</p>
-
-          {/* Interactive Icons - Visible to all, editable only for owner */}
-          <div className="flex items-center justify-start gap-3 mt-4">
-            <button
-              onClick={handleWebsiteClick}
-              className={`flex items-center gap-2 px-3 py-2 border border-foreground transition-colors text-xs ${
-                websiteUrl
-                  ? "hover:bg-foreground hover:text-background cursor-pointer"
-                  : isOwner
-                  ? "hover:bg-foreground hover:text-background cursor-pointer"
-                  : "opacity-50 cursor-not-allowed"
-              }`}
-              title={websiteUrl || (isOwner ? "Add website" : "No website added")}
-              disabled={!websiteUrl && !isOwner}
-            >
-              <Globe className="w-4 h-4" />
-              {websiteUrl ? "[WEBSITE]" : isOwner ? "[ADD WEBSITE]" : "[NO WEBSITE]"}
-            </button>
-            <button
-              onClick={handleEmailClick}
-              className={`flex items-center gap-2 px-3 py-2 border border-foreground transition-colors text-xs ${
-                emailUrl
-                  ? "hover:bg-foreground hover:text-background cursor-pointer"
-                  : isOwner
-                  ? "hover:bg-foreground hover:text-background cursor-pointer"
-                  : "opacity-50 cursor-not-allowed"
-              }`}
-              title={emailUrl || (isOwner ? "Add email" : "No email added")}
-              disabled={!emailUrl && !isOwner}
-            >
-              <Mail className="w-4 h-4" />
-              {emailUrl ? "[EMAIL]" : isOwner ? "[ADD EMAIL]" : "[NO EMAIL]"}
-            </button>
-          </div>
+          <p className="text-xs md:text-sm text-muted-foreground whitespace-pre-wrap">{bio}</p>
         </div>
       </div>
     </div>

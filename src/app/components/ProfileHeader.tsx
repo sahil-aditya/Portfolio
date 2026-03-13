@@ -130,7 +130,16 @@ export function ProfileHeader({
   }
 
   return (
-    <div className="w-full aspect-[3/2] border-2 border-foreground bg-background p-6 md:p-8 relative group">
+    <div className="w-full aspect-[3/2] border-2 border-foreground bg-background p-6 md:p-8 relative group overflow-hidden">
+      {/* Floating Blur Blobs */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-32 -left-32 w-64 h-64 bg-foreground/10 rounded-full blur-3xl" style={{ animation: 'float 8s ease-in-out infinite' }} />
+        <div className="absolute top-20 left-1/4 w-48 h-48 bg-foreground/5 rounded-full blur-2xl" style={{ animation: 'float 10s ease-in-out infinite 1s' }} />
+        <div className="absolute bottom-10 right-10 w-56 h-56 bg-foreground/8 rounded-full blur-3xl" style={{ animation: 'float 12s ease-in-out infinite 2s' }} />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10">
       {isOwner && (
         <button
           onClick={() => setIsEditing(true)}
@@ -191,6 +200,7 @@ export function ProfileHeader({
           <h2 className="text-lg md:text-xl mb-2">{name}</h2>
           <p className="text-xs md:text-sm text-muted-foreground whitespace-pre-wrap">{bio}</p>
         </div>
+      </div>
       </div>
     </div>
   );

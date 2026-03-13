@@ -81,7 +81,7 @@ function AppContent() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background border-b-2 border-foreground">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
-          <h1 className="text-xl">[PORTFOLIO]</h1>
+          <h1 className="text-xl">[CREATIVE GALLERY]</h1>
           <div className="flex items-center gap-2">
             {isOwner && (
               <button

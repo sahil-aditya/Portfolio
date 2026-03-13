@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Globe, Mail, Edit2 } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { useOwnership } from "../context/OwnershipContext";
 
 interface ProfileHeaderProps {
   profileImage?: string;
@@ -25,6 +26,7 @@ export function ProfileHeader({
   onUpdate,
 }: ProfileHeaderProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const { isOwner } = useOwnership();
   const [editName, setEditName] = useState(name);
   const [editBio, setEditBio] = useState(bio);
   const [editWebsite, setEditWebsite] = useState(websiteUrl);
@@ -129,12 +131,14 @@ export function ProfileHeader({
 
   return (
     <div className="w-full aspect-[3/2] border-2 border-foreground bg-background p-6 md:p-8 relative group">
-      <button
-        onClick={() => setIsEditing(true)}
-        className="absolute top-4 right-4 p-2 border border-foreground hover:bg-foreground hover:text-background transition-colors opacity-0 group-hover:opacity-100"
-      >
-        <Edit2 className="w-4 h-4" />
-      </button>
+      {isOwner && (
+        <button
+          onClick={() => setIsEditing(true)}
+          className="absolute top-4 right-4 p-2 border border-foreground hover:bg-foreground hover:text-background transition-colors opacity-0 group-hover:opacity-100"
+        >
+          <Edit2 className="w-4 h-4" />
+        </button>
+      )}
 
       <div className="h-full flex flex-col md:flex-row items-center gap-6">
         {/* Profile Picture */}

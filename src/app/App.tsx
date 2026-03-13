@@ -4,6 +4,8 @@ import { GalleryCard, GalleryPost } from "./components/GalleryCard";
 import { CreatePostModal } from "./components/CreatePostModal";
 import { EditOverlay } from "./components/EditOverlay";
 import { ProfileHeader } from "./components/ProfileHeader";
+import { OwnershipProvider, useOwnership } from "./context/OwnershipContext";
+import { OwnershipToggle } from "./components/OwnershipToggle";
 
 const initialPosts: GalleryPost[] = [
   {
@@ -43,7 +45,7 @@ const initialPosts: GalleryPost[] = [
   },
 ];
 
-export default function App() {
+function AppContent() {
   const [posts, setPosts] = useState<GalleryPost[]>(initialPosts);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -54,6 +56,8 @@ export default function App() {
     websiteUrl: "",
     emailUrl: "",
   });
+
+  const { isOwner } = useOwnership();
 
   const handleCreatePost = (newPost: {
     beforeImage: string;
@@ -76,19 +80,24 @@ export default function App() {
     <div className="dark min-h-screen bg-background text-foreground">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background border-b-2 border-foreground">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
           <h1 className="text-xl">[PORTFOLIO]</h1>
-          <button
-            onClick={() => setIsEditMode(!isEditMode)}
-            className={`flex items-center gap-2 px-4 py-2 border-2 transition-colors ${
-              isEditMode
-                ? "bg-foreground text-background border-foreground"
-                : "border-foreground hover:bg-foreground hover:text-background"
-            }`}
-          >
-            <Edit3 className="w-4 h-4" />
-            {isEditMode ? "[EXIT EDIT]" : "[EDIT MODE]"}
-          </button>
+          <div className="flex items-center gap-2">
+            {isOwner && (
+              <button
+                onClick={() => setIsEditMode(!isEditMode)}
+                className={`flex items-center gap-2 px-4 py-2 border-2 transition-colors ${
+                  isEditMode
+                    ? "bg-foreground text-background border-foreground"
+                    : "border-foreground hover:bg-foreground hover:text-background"
+                }`}
+              >
+                <Edit3 className="w-4 h-4" />
+                {isEditMode ? "[EXIT EDIT]" : "[EDIT MODE]"}
+              </button>
+            )}
+            <OwnershipToggle />
+          </div>
         </div>
       </header>
 
@@ -120,21 +129,25 @@ export default function App() {
         {posts.length === 0 && (
           <div className="text-center py-20">
             <p className="text-muted-foreground">[NO POSTS YET]</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Click the + button to create your first post
-            </p>
+            {isOwner && (
+              <p className="text-sm text-muted-foreground mt-2">
+                Click the + button to create your first post
+              </p>
+            )}
           </div>
         )}
       </main>
 
-      {/* Floating Action Button */}
-      <button
-        onClick={() => setIsCreateModalOpen(true)}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 w-14 h-14 bg-foreground text-background border-2 border-foreground flex items-center justify-center hover:scale-110 transition-transform z-30"
-        aria-label="Create new post"
-      >
-        <Plus className="w-8 h-8" />
-      </button>
+      {/* Floating Action Button - Only visible to owner */}
+      {isOwner && (
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="fixed bottom-8 left-1/2 -translate-x-1/2 w-14 h-14 bg-foreground text-background border-2 border-foreground flex items-center justify-center hover:scale-110 transition-transform z-30"
+          aria-label="Create new post"
+        >
+          <Plus className="w-8 h-8" />
+        </button>
+      )}
 
       {/* Create Post Modal */}
       <CreatePostModal
@@ -155,5 +168,13 @@ export default function App() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <OwnershipProvider>
+      <AppContent />
+    </OwnershipProvider>
   );
 }

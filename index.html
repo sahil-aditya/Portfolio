@@ -1,15 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Sahil | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <style>
+        .neo-brutal { border: 3px solid black; box-shadow: 5px 5px 0px 0px rgba(0,0,0,1); transition: all 0.2s; }
+        .neo-brutal:active { box-shadow: 0px 0px 0px 0px rgba(0,0,0,1); transform: translate(3px, 3px); }
+        .masonry { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .edit-border { outline: 2px dashed #facc15; cursor: pointer; }
+    </style>
+</head>
+<body class="bg-[#e3e3e3] font-mono p-4 md:p-10 text-black">
 
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Portfolio</title>
-    </head>
+    <div class="fixed bottom-6 left-6 z-50">
+        <button onclick="authAdmin()" class="bg-white neo-brutal p-3 rounded-full hover:bg-yellow-400">
+            <i data-lucide="camera"></i>
+        </button>
+    </div>
 
-    <body>
-      <div id="root"></div>
-      <script type="module" src="/src/main.tsx"></script>
-    </body>
-  </html>
-  
+    <div id="export-ui" class="hidden fixed top-4 right-4 z-50">
+        <button onclick="exportNewCode()" class="bg-green-500 text-white neo-brutal px-4 py-2 font-black">SAVE/COPY CODE</button>
+    </div>
+
+    <div class="max-w-5xl mx-auto">
+        <div class="bg-white neo-brutal p-6 mb-10 relative flex flex-col md:flex-row items-center gap-8">
+            <div class="relative">
+                <img id="p-img" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400" 
+                     class="w-32 h-32 rounded-full border-4 border-black object-cover" onclick="triggerEdit('p-img', 'img')">
+            </div>
+            <div class="flex-1 text-center md:text-left">
+                <h1 id="p-name" class="text-4xl font-black uppercase mb-1" onclick="triggerEdit('p-name', 'text')">Aditya Sahil</h1>
+                <p id="p-bio" class="text-lg font-bold text-gray-700 mb-4" onclick="triggerEdit('p-bio', 'text')">Interior Designer | Before & After Specialist</p>
+                
+                <div id="social-box" class="flex flex-wrap gap-3 justify-center md:justify-start">
+                    <button id="add-social-btn" class="hidden bg-blue-400 neo-brutal px-3 py-1 text-xs font-black" onclick="addSocialLink()">+ ADD LINK</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="gallery-grid" class="masonry">
+            </div>
+
+        <div id="admin-add-post" class="hidden mt-10 text-center">
+            <button onclick="addNewProject()" class="bg-yellow-400 neo-brutal px-10 py-5 font-black text-2xl">+ ADD NEW PROJECT</button>
+        </div>
+    </div>
+
+    <script>
+        let isAdmin = false;
+        let projects = [
+            { id: '1', before: 'https://images.unsplash.com/photo-1581850518616-bcb8077fa233?w=800', after: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800' }
+        ];
+        let links = [{ title: 'INSTA', url: '#', icon: 'instagram' }];
+
+        function authAdmin() {
+            const pass = prompt("Are you admin?");
+            if (pass === "120104") {
+                isAdmin = true;
+                document.getElementById('admin-add-post').classList.remove('hidden');
+                document.getElementById('add-social-btn').classList.remove('hidden');
+                document.getElementById('export-ui').classList.remove('hidden');
+                alert("Edit Mode Active! Click elements to edit.");
+                render();
+                enableDrag();
+            } else { alert("Wrong password!"); }
+        }
+
+        function render() {
+            // Gallery Render
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = projects.map((p, i) => `
+                <div class="bg-white neo-brutal overflow-hidden relative group" data-id="${p.id}">
+                    <img id="img-tag-${i}" src="${p.after}" class="w-full h-72 object-cover">
+                    <div class="p-3 flex justify-between bg-white border-t-2 border-black">
+                        <button onclick="toggleBA(${i})" class="bg-black text-white px-3 py-1 text-[10px] font-black">VIEW BEFORE</button>
+                        ${isAdmin ? `<button onclick="delProject(${i})" class="text-red-600 font-black">DELETE</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            // Social Render
+            const sBox = document.getElementById('social-box');
+            const linksHtml = links.map((l, i) => `
+                <a href="${l.url}" target="_blank" class="flex items-center gap-1 bg-white neo-brutal px-3 py-1 text-xs font-black">
+                    <span>${l.title}</span>
+                </a>
+            `).join('');
+            sBox.innerHTML = linksHtml + (isAdmin ? `<button class="bg-blue-400 neo-brutal px-3 py-1 text-xs font-black" onclick="addSocialLink()">+ ADD LINK</button>` : '');
+            lucide.createIcons();
+        }
+
+        function toggleBA(i) {
+            const img = document.getElementById(`img-tag-${i}`);
+            img.src = (img.src === projects[i].after) ? projects[i].before : projects[i].after;
+        }
+
+        function triggerEdit(id, type) {
+            if (!isAdmin) return;
+            if (type === 'text') {
+                const val = prompt("Enter new text:", document.getElementById(id).innerText);
+                if (val) document.getElementById(id).innerText = val;
+            } else {
+                const url = prompt("Enter Image URL:");
+                if (url) document.getElementById(id).src = url;
+            }
+        }
+
+        function addNewProject() {
+            const b = prompt("Before Image URL:");
+            const a = prompt("After Image URL:");
+            if (b && a) { projects.push({ id: Date.now().toString(), before: b, after: a }); render(); }
+        }
+
+        function addSocialLink() {
+            const t = prompt("Tiny Title (e.g. FB):");
+            const u = prompt("URL:");
+            if (t && u) { links.push({ title: t, url: u }); render(); }
+        }
+
+        function delProject(i) { if(confirm("Delete?")) { projects.splice(i,1); render(); } }
+
+        function enableDrag() {
+            if (!isAdmin) return;
+            new Sortable(document.getElementById('gallery-grid'), {
+                animation: 150,
+                onEnd: function (evt) {
+                    const item = projects.splice(evt.oldIndex, 1)[0];
+                    projects.splice(evt.newIndex, 0, item);
+                }
+            });
+        }
+
+        function exportNewCode() {
+            // This copies the current HTML structure to clipboard
+            const html = document.documentElement.outerHTML;
+            navigator.clipboard.writeText(html);
+            alert("Code copied! Paste this into your index.html on GitHub to save permanently.");
+        }
+
+        render();
+    </script>
+</body>
+</html>

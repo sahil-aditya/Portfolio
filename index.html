@@ -534,7 +534,11 @@
     // Gallery
     function renderGallery() {
       const container = document.getElementById('galleryGrid');
-      container.innerHTML = '';
+      const col1 = document.getElementById('col1');
+      const col2 = document.getElementById('col2');
+
+      col1.innerHTML = '';
+      col2.innerHTML = '';
       
       state.gallery.forEach((item, index) => {
         const card = document.createElement('div');

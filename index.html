@@ -23,15 +23,25 @@
     }
     
     .masonry-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+      column-count: 2;
+      column-gap: 16px;
+    }
+    
+    @media (max-width: 640px) {
+      .masonry-grid {
+        column-count: 2;
+      }
     }
     
     @media (min-width: 768px) {
       .masonry-grid {
-        grid-template-columns: repeat(2, 1fr);
+        column-count: 2;
       }
+    }
+
+    .masonry-grid > div {
+      break-inside: avoid;
+      margin-bottom: 16px;
     }
     
     .dragging {

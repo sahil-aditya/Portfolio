@@ -1,29 +1,204 @@
 {
   "gallery": [
-    {
-      "id": "1",
-      "beforeImage": "https://images.unsplash.com/photo-1768321902794-c24fb1f00661?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-      "afterImage": "https://images.unsplash.com/photo-1667584523543-d1d9cc828a15?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-    },
-    {
-      "id": "2",
-      "beforeImage": "https://images.unsplash.com/photo-1587522630593-3b9e5f3255f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-      "afterImage": "https://images.unsplash.com/photo-1760780567530-389d8a3fba75?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-    },
-    {
-      "id": "3",
-      "beforeImage": "https://images.unsplash.com/photo-1632930271512-de0f6bc26661?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-      "afterImage": "https://images.unsplash.com/photo-1694350892418-19cc4b56aca6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-    },
-    {
-      "id": "4",
-      "beforeImage": "https://images.unsplash.com/photo-1636969386919-b90cad8216e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-      "afterImage": "https://images.unsplash.com/photo-1768312177832-3b1a3f7c6db7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-    },
-    {
-      "id": "5",
-      "beforeImage": "https://images.unsplash.com/photo-1744819181935-edb1c6924d0b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080",
-      "afterImage": "https://images.unsplash.com/photo-1772567732969-c1506edf80a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080"
-    }
+  {
+    "id": "1",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before1.png",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after1.png"
+  },
+  {
+    "id": "2",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before21.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after21.jpg"
+  },
+  {
+    "id": "3",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before22.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after22.jpg"
+  },
+  {
+    "id": "4",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before23.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after23.jpg"
+  },
+  {
+    "id": "5",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before24.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after24.jpg"
+  },
+  {
+    "id": "6",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before25.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after25.jpg"
+  },
+  {
+    "id": "7",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before26.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after26.jpg"
+  },
+  {
+    "id": "8",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before27.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after27.jpg"
+  },
+  {
+    "id": "9",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before28.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after28.jpg"
+  },
+  {
+    "id": "10",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before29.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after29.jpg"
+  },
+  {
+    "id": "11",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before30.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after30.jpg"
+  },
+  {
+    "id": "12",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before31.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after31.jpg"
+  },
+  {
+    "id": "13",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before32.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after32.jpg"
+  },
+  {
+    "id": "14",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before34.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after34.jpg"
+  },
+  {
+    "id": "15",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before35.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after35.jpg"
+  },
+  {
+    "id": "16",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before37.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after37.jpg"
+  },
+  {
+    "id": "17",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before38.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after38.jpg"
+  },
+  {
+    "id": "18",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before39.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after39.jpg"
+  },
+  {
+    "id": "19",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before40.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after40.jpg"
+  },
+  {
+    "id": "20",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before41.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after41.jpg"
+  },
+  {
+    "id": "21",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before42.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after42.jpg"
+  },
+  {
+    "id": "22",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before43.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after43.jpg"
+  },
+  {
+    "id": "23",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before44.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after44.jpg"
+  },
+  {
+    "id": "24",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before46.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after46.jpg"
+  },
+  {
+    "id": "25",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before49.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after49.jpg"
+  },
+  {
+    "id": "26",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before50.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after50.jpg"
+  },
+  {
+    "id": "27",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before51.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after51.jpg"
+  },
+  {
+    "id": "28",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before52.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after52.jpg"
+  },
+  {
+    "id": "29",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before53.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after53.jpg"
+  },
+  {
+    "id": "30",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before54.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after54.jpg"
+  },
+  {
+    "id": "31",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before92.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after92.jpg"
+  },
+  {
+    "id": "32",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before93.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after93.jpg"
+  },
+  {
+    "id": "33",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before98.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after98.jpg"
+  },
+  {
+    "id": "34",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before99.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after99.jpg"
+  },
+  {
+    "id": "35",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before212.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after212.jpg"
+  },
+  {
+    "id": "36",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before213.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after213.jpg"
+  },
+  {
+    "id": "37",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before251.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after251.jpg"
+  },
+  {
+    "id": "38",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before261.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after261.jpg"
+  },
+  {
+    "id": "39",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before271.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after271.jpg"
+  },
+  {
+    "id": "40",
+    "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before291.jpg",
+    "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after291.jpg"
+   }
   ]
 }

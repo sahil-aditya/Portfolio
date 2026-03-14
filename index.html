@@ -542,23 +542,26 @@
         const imageWrapper = document.createElement('div');
         imageWrapper.className = 'w-full cursor-pointer';
         
-        const afterImg = document.createElement('img');
-        afterImg.src = item.afterImage;
-        afterImg.alt = 'Gallery item';
-        afterImg.className = 'w-full h-auto object-contain progressive-img';
-        afterImg.loading = "lazy";
+        const img = document.createElement('img');
+        img.src = item.afterImage;
+        img.alt = 'Gallery item';
+        img.className = 'w-full h-auto object-contain progressive-img';
+        img.dataset.before = item.beforeImage;
+        img.dataset.after = item.afterImage;
+        img.loading = "lazy";
 
-        afterImg.onload = () => {
-          afterImg.classList.add("loaded");
+        /* preload both images together */
+        const preloadAfter = new Image();
+        preloadAfter.src = item.afterImage;
+
+        const preloadBefore = new Image();
+        preloadBefore.src = item.beforeImage;
+
+        img.onload = () => {
+          img.classList.add("loaded");
         };
 
-        const beforeImg = document.createElement('img');
-        beforeImg.src = item.beforeImage;
-        beforeImg.className = 'hidden';
-        beforeImg.loading = "lazy";
-
-        imageWrapper.appendChild(afterImg);
-        imageWrapper.appendChild(beforeImg);
+        imageWrapper.appendChild(img);
         
         const toggleBtn = document.createElement('button');
         // Mobile: px-2 py-0.5, text-[10px] | Desktop (md): px-3 py-1, text-xs

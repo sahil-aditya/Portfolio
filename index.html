@@ -192,6 +192,9 @@
       <span class="text-2xl">+</span>
       <p class="text-sm mt-2">[ADD NEW PROJECT]</p>
     </button>
+    <button id="saveGalleryBtn" class="w-full mt-3 p-3 border border-green-500 text-green-400 hover:bg-green-500 hover:text-black transition-colors hidden">
+      [SAVE CHANGES]
+    </button>
   </main>
 
   <!-- Image Viewer -->
@@ -364,7 +367,8 @@
         // Gallery is loaded from JSON, so we don't overwrite it here
       }
     }
-
+    
+    const saveGalleryBtn = document.getElementById('saveGalleryBtn');
     // Save state to localStorage
     function saveState() {
       localStorage.setItem('portfolioState', JSON.stringify({
@@ -373,6 +377,11 @@
         gallery: state.gallery
       }));
     }
+
+    saveGalleryBtn.addEventListener('click', () => {
+      saveState();
+      alert("Gallery saved successfully");
+    });
 
     // Admin authentication
     document.getElementById('adminBtn').addEventListener('click', () => {
@@ -407,6 +416,7 @@
       if (state.isEditMode) {
         document.getElementById('editModeIndicator').classList.remove('hidden');
         document.getElementById('addGalleryBtn').classList.remove('hidden');
+        document.getElementById('saveGalleryBtn').classList.remove('hidden');
         
         // Make profile editable
         const profileName = document.getElementById('profileName');
@@ -436,6 +446,7 @@
       } else {
         document.getElementById('editModeIndicator').classList.add('hidden');
         document.getElementById('addGalleryBtn').classList.add('hidden');
+        document.getElementById('saveGalleryBtn').classList.add('hidden');
       }
       renderSocialLinks();
       renderGallery();

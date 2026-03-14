@@ -552,7 +552,7 @@
         const img = document.createElement('img');
         img.src = item.afterImage;
         img.alt = 'Gallery item';
-        img.className = 'w-full h-auto object-contain progressive-img';
+        img.className = 'w-full h-auto object-contain progressive-img transition-transform duration-500 ease-out group-hover:scale-105';
         img.dataset.before = item.beforeImage;
         img.dataset.after = item.afterImage;
         img.loading = "lazy";

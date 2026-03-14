@@ -529,7 +529,8 @@
         imageWrapper.appendChild(img);
         
         const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'absolute bottom-2 left-2 px-3 py-1 bg-black/90 border-2 border-white text-xs hover:bg-white hover:text-black transition-colors rounded-full';
+        // Mobile: px-2 py-0.5, text-[10px] | Desktop (md): px-3 py-1, text-xs
+        toggleBtn.className = 'absolute bottom-2 left-2 px-2 py-0.5 md:px-3 md:py-1 bg-black/90 border border-white text-[10px] md:text-xs hover:bg-white hover:text-black transition-colors rounded-full';
         toggleBtn.textContent = 'TAP TO SEE BEFORE';
         
         let showingBefore = false;

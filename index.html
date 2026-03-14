@@ -178,7 +178,7 @@
     </button>
     
     <button id="toggleViewerImage" class="absolute top-4 left-4 px-3 py-2 bg-black/90 border-2 border-white text-xs hover:bg-white hover:text-black transition-colors rounded-full z-10">
-      [TAP TO SEE BEFORE]
+      TAP TO SEE BEFORE
     </button>
     
     <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
@@ -530,14 +530,14 @@
         
         const toggleBtn = document.createElement('button');
         toggleBtn.className = 'absolute bottom-2 left-2 px-3 py-1 bg-black/90 border-2 border-white text-xs hover:bg-white hover:text-black transition-colors rounded-full';
-        toggleBtn.textContent = '[TAP TO SEE BEFORE]';
+        toggleBtn.textContent = 'TAP TO SEE BEFORE';
         
         let showingBefore = false;
         toggleBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           showingBefore = !showingBefore;
           img.src = showingBefore ? item.beforeImage : item.afterImage;
-          toggleBtn.textContent = showingBefore ? '[TAP TO SEE AFTER]' : '[TAP TO SEE BEFORE]';
+          toggleBtn.textContent = showingBefore ? 'TAP TO SEE AFTER' : 'TAP TO SEE BEFORE';
         });
         
         imageWrapper.addEventListener('click', () => {
@@ -680,7 +680,7 @@
       const toggleBtn = document.getElementById('toggleViewerImage');
       
       img.src = afterImage;
-      toggleBtn.textContent = '[TAP TO SEE BEFORE]';
+      toggleBtn.textContent = 'TAP TO SEE BEFORE';
       viewer.classList.add('active');
       updateZoomDisplay();
     }
@@ -697,7 +697,7 @@
       const toggleBtn = document.getElementById('toggleViewerImage');
       
       img.src = state.currentViewer.showBefore ? state.currentViewer.beforeImage : state.currentViewer.afterImage;
-      toggleBtn.textContent = state.currentViewer.showBefore ? '[TAP TO SEE AFTER]' : '[TAP TO SEE BEFORE]';
+      toggleBtn.textContent = state.currentViewer.showBefore ? 'TAP TO SEE AFTER' : 'TAP TO SEE BEFORE';
     });
 
     document.getElementById('zoomIn').addEventListener('click', () => {

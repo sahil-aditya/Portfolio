@@ -616,7 +616,11 @@
           card.addEventListener('dragend', handleDragEnd);
         }
         
-        container.appendChild(card);
+        if (index % 2 === 0) {
+          col1.appendChild(card);
+        } else {
+          col2.appendChild(card);
+            }
       });
     }
 

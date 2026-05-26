@@ -179,14 +179,13 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
 .social-btn:hover { box-shadow: 0 0 26px rgba(127, 155, 255, 0.45); transform: translateY(-2px); }
 
 .masonry {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  columns: 1;
+  column-gap: 1rem;
   margin-top: 1.4rem;
 }
 .gallery-item {
   position: relative;
-  margin: 0;
+  margin: 0 0 1rem;
   border-radius: 18px;
   overflow: hidden;
   break-inside: avoid;
@@ -227,8 +226,8 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
 .reveal.visible { opacity: 1; transform: translateY(0); }
 .delay-1 { transition-delay: 0.12s; }
 
-@media (min-width: 700px) { .masonry { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 900px) { .masonry { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 700px) { .masonry { columns: 2; } }
+@media (min-width: 1024px) { .masonry { columns: 3; } }
 
 @media (max-width: 900px) {
   .section { width: min(1180px, 94vw); }

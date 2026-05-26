@@ -3,33 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Landscape Portfolio</title>
+  <title>Aether Frame — Photographer & Colorist</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&family=Syne:wght@500;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="viewer-note" id="viewerNote">Tap image to see before</div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="grain"></div>
 
-  <main class="layout">
-    <aside class="rail">
-      <a class="icon" href="#" aria-label="Instagram">📷</a>
-      <a class="icon" href="#" aria-label="Mail">✉️</a>
-      <div class="plus">+</div>
-    </aside>
+  <header class="hero section" id="home">
+    <nav class="top-nav glass">
+      <div class="brand">AETHER FRAME</div>
+      <a href="#gallery" class="nav-link">Gallery</a>
+    </nav>
 
-    <section class="hero">
-      <div class="about">Name <small>About Me</small></div>
-      <div class="profile">Profile Picture
-        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80" alt="Profile Picture" />
+    <div class="hero-grid">
+      <div class="hero-copy reveal">
+        <p class="kicker">Photographer & Color Grading Artist</p>
+        <h1>Nova Elise</h1>
+        <p class="subtitle">Photographer • Colorist • Visual Storyteller</p>
+        <p class="lead">Crafting cinematic worlds where tone, light, and color become emotion.</p>
+        <div class="cta-row">
+          <a href="#gallery" class="btn btn-primary">View Gallery</a>
+          <a href="#contact" class="btn btn-ghost">Contact Me</a>
+        </div>
       </div>
-    </section>
 
-    <aside class="hint">Tap images to see before</aside>
-    <section class="gallery-wrap" id="gallery"></section>
-  </main>
+      <div class="hero-portrait reveal delay-1">
+        <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80" alt="Portrait of Nova Elise" />
+      </div>
+    </div>
+  </header>
 
-  <script src="script.js"></script>
+  <section class="about section reveal" id="about">
+    <div class="about-card glass">
+      <h2>About Me</h2>
+      <p>I shape visual narratives for brands, artists, and cinematic campaigns through premium photography and expressive color grading.</p>
+      <div class="skill-grid">
+        <span>Photography</span>
+        <span>Color Grading</span>
+        <span>Retouching</span>
+        <span>Cinematic Editing</span>
+        <span>Visual Storytelling</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="social section reveal" id="contact">
+    <h2>Connect</h2>
+    <div class="social-grid">
+      <a href="#" class="social-btn">Instagram</a>
+      <a href="#" class="social-btn">Website</a>
+      <a href="#" class="social-btn">Behance</a>
+      <a href="#" class="social-btn">Pinterest</a>
+      <a href="#" class="social-btn">YouTube</a>
+      <a href="mailto:hello@example.com" class="social-btn">Email</a>
+    </div>
+  </section>
+
+  <section class="gallery section" id="gallery">
+    <h2 class="reveal">Before / After Gallery</h2>
+    <div id="galleryGrid" class="masonry"></div>
+  </section>
+
+  <footer class="footer section reveal">
+    <p class="signature">Nova Elise — Light. Tone. Emotion.</p>
+    <p>© 2026 Nova Elise. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const galleryGrid = document.getElementById('galleryGrid');
+    const cursorGlow = document.getElementById('cursorGlow');
+
+    document.addEventListener('mousemove', (e) => {
+      cursorGlow.style.left = `${e.clientX}px`;
+      cursorGlow.style.top = `${e.clientY}px`;
+    });
+
+    async function loadGallery() {
+      try {
+        const response = await fetch('./images.json');
+        const data = await response.json();
+        const items = data.gallery || [];
+
+        items.forEach((item, index) => {
+          const card = document.createElement('article');
+          card.className = 'gallery-item loading';
+          card.setAttribute('tabindex', '0');
+
+          card.innerHTML = `
+            <div class="label">AFTER</div>
+            <img src="${item.afterImage}" alt="Edited visual ${item.id}" loading="lazy" />
+          `;
+
+          const image = card.querySelector('img');
+          const label = card.querySelector('.label');
+
+          image.addEventListener('load', () => {
+            card.classList.remove('loading');
+            card.style.animationDelay = `${index * 40}ms`;
+            card.classList.add('loaded');
+          });
+
+          let showingAfter = true;
+          const toggleImage = () => {
+            card.classList.add('fade-switch');
+            setTimeout(() => {
+              showingAfter = !showingAfter;
+              image.src = showingAfter ? item.afterImage : item.beforeImage;
+              label.textContent = showingAfter ? 'AFTER' : 'BEFORE';
+            }, 170);
+          };
+
+          image.addEventListener('load', () => {
+            card.classList.remove('fade-switch');
+          });
+
+          card.addEventListener('click', toggleImage);
+          card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              toggleImage();
+            }
+          });
+
+          galleryGrid.appendChild(card);
+        });
+      } catch (error) {
+        galleryGrid.innerHTML = '<p class="error">Unable to load gallery at the moment.</p>';
+      }
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    loadGallery();
+  </script>
 </body>
 </html>

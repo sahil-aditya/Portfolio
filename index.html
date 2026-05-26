@@ -206,11 +206,12 @@
       }
     };
 
-    const pauseMusicImmediately = () => {
+    const pauseMusicWithFade = () => {
       if (!bgMusic || bgMusic.paused) return;
-      clearFadeAudio();
-      bgMusic.pause();
-      bgMusic.volume = 1;
+      fadeAudio(0, 1000, () => {
+        bgMusic.pause();
+        bgMusic.volume = 1;
+      });
     };
 
     const playMusicWithFade = async () => {
@@ -263,7 +264,7 @@
         if (bgMusic.paused) {
           playMusicWithFade();
         } else {
-          pauseMusicImmediately();
+          pauseMusicWithFade();
         }
 
         window.setTimeout(syncMuteButton, 60);

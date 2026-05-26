@@ -137,6 +137,18 @@
         const response = await fetch('./images.json');
         const data = await response.json();
         const items = data.gallery || [];
+        const isDesktopGrid = () => window.matchMedia('(min-width: 700px)').matches;
+        const resizeCardForGrid = (card) => {
+          if (!isDesktopGrid()) {
+            card.style.gridRowEnd = '';
+            return;
+          }
+
+          const rowSize = 8;
+          const cardHeight = card.getBoundingClientRect().height;
+          const rowSpan = Math.max(1, Math.ceil(cardHeight / rowSize));
+          card.style.gridRowEnd = `span ${rowSpan}`;
+        };
 
         items.forEach((item, index) => {
           const card = document.createElement('article');
@@ -150,6 +162,7 @@
           const image = card.querySelector('img');
 
           image.addEventListener('load', () => {
+            resizeCardForGrid(card);
             card.classList.remove('loading');
             card.style.animationDelay = `${index * 40}ms`;
             card.classList.add('loaded');
@@ -165,6 +178,7 @@
           };
 
           image.addEventListener('load', () => {
+            resizeCardForGrid(card);
             card.classList.remove('fade-switch');
           });
 
@@ -178,6 +192,10 @@
 
           galleryGrid.appendChild(card);
         });
+
+        window.addEventListener('resize', () => {
+          document.querySelectorAll('.gallery-item').forEach((card) => resizeCardForGrid(card));
+        }, { passive: true });
       } catch (error) {
         galleryGrid.innerHTML = '<p class="error">Unable to load gallery at the moment.</p>';
       }

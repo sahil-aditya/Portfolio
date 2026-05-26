@@ -154,7 +154,6 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
   width: 100%;
   border-radius: 26px;
   max-height: 76vh;
-  filter: grayscale(1) contrast(1.08);
 }
 
 .about, .social, .gallery, .footer { padding: 2rem 0 0; }
@@ -222,7 +221,6 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
   height: auto;
   display: block;
   transition: transform 0.4s ease, opacity 0.35s ease;
-  filter: grayscale(1) contrast(1.08);
 }
 .gallery-item:hover img { transform: scale(1.03); }
 .gallery-item.loading { min-height: 220px; }

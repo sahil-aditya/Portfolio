@@ -19,11 +19,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&family=Syne:wght@500;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="preload" href="https://sahil-aditya.github.io/Creative_Gallery/images/music.mp3" as="audio" crossorigin />
 </head>
 <body>
   <div class="touch-meteor" id="touchMeteor"></div>
-  <button class="music-start-overlay" id="musicStartOverlay" type="button" aria-label="Tap to start background music"></button>
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
   <div class="grain"></div>
@@ -83,8 +81,6 @@
 
   <div class="floating-toggle-hint glass" aria-hidden="true">Tap images to switch Graded↕RAW</div>
 
-  <button class="floating-mute glass" id="floatingMute" type="button" aria-label="Pause music">Pause music</button>
-  <audio id="bgMusic" loop preload="auto" src="https://sahil-aditya.github.io/Creative_Gallery/images/music.mp3"></audio>
 
   <footer class="footer section reveal">
     <p class="signature">SAM — Light. Tone. Emotion.</p>
@@ -139,141 +135,6 @@
         updateTouchPoint(lastTouchPoint.x, lastTouchPoint.y);
       }
     }, { passive: true });
-
-
-    const bgMusic = document.getElementById('bgMusic');
-
-    if (bgMusic) {
-      bgMusic.load();
-    }
-    const floatingMute = document.getElementById('floatingMute');
-    const musicStartOverlay = document.getElementById('musicStartOverlay');
-    let hasStartedMusic = false;
-
-    let fadeTimeoutId = null;
-
-    const clearFadeAudio = () => {
-      if (fadeTimeoutId) {
-        window.clearTimeout(fadeTimeoutId);
-        fadeTimeoutId = null;
-      }
-    };
-
-    const fadeAudio = (targetVolume, durationMs, callback) => {
-      if (!bgMusic) return;
-      clearFadeAudio();
-
-      const startVolume = bgMusic.volume;
-      const steps = Math.max(1, Math.round(durationMs / 50));
-      let step = 0;
-
-      const tick = () => {
-        step += 1;
-        const progress = Math.min(1, step / steps);
-        bgMusic.volume = startVolume + ((targetVolume - startVolume) * progress);
-
-        if (progress < 1) {
-          fadeTimeoutId = window.setTimeout(tick, 50);
-          return;
-        }
-
-        fadeTimeoutId = null;
-        if (callback) callback();
-      };
-
-      tick();
-    };
-
-    const startMusicOnFirstInteraction = async () => {
-      if (hasStartedMusic || !bgMusic) return;
-      hasStartedMusic = true;
-      bgMusic.volume = 0;
-
-      try {
-        await bgMusic.play();
-        fadeAudio(1, 3000);
-        removeStartMusicListeners();
-        if (musicStartOverlay) {
-          musicStartOverlay.classList.add('is-hidden');
-          musicStartOverlay.setAttribute('aria-hidden', 'true');
-          window.setTimeout(() => musicStartOverlay.remove(), 220);
-        }
-        if (floatingMute) {
-          floatingMute.classList.add('is-visible');
-        }
-      } catch (error) {
-        hasStartedMusic = false;
-      }
-    };
-
-    const pauseMusicWithFade = () => {
-      if (!bgMusic || bgMusic.paused) return;
-      fadeAudio(0, 1000, () => {
-        bgMusic.pause();
-        bgMusic.volume = 1;
-      });
-    };
-
-    const playMusicWithFade = async () => {
-      if (!bgMusic || !bgMusic.paused) return;
-
-      try {
-        await bgMusic.play();
-        fadeAudio(1, 3000);
-      } catch (error) {
-        // Ignore autoplay restrictions until user interacts again.
-      }
-    };
-
-    const syncMuteButton = () => {
-      if (!floatingMute || !bgMusic) return;
-      const isPaused = bgMusic.paused;
-      floatingMute.textContent = isPaused ? 'Play music' : 'Pause music';
-      floatingMute.setAttribute('aria-label', isPaused ? 'Play music' : 'Pause music');
-      floatingMute.classList.toggle('is-paused', isPaused);
-    };
-
-    const startMusicTriggers = [
-      ['scroll', { passive: true }],
-      ['wheel', { passive: true }],
-      ['touchstart', { passive: true }],
-      ['pointerdown', { passive: true }],
-      ['keydown', {}]
-    ];
-
-    const removeStartMusicListeners = () => {
-      startMusicTriggers.forEach(([eventName, options]) => {
-        document.removeEventListener(eventName, startMusicOnFirstInteraction, options);
-      });
-    };
-
-    startMusicTriggers.forEach(([eventName, options]) => {
-      document.addEventListener(eventName, startMusicOnFirstInteraction, options);
-    });
-
-    if (musicStartOverlay) {
-      musicStartOverlay.addEventListener('click', startMusicOnFirstInteraction);
-      musicStartOverlay.addEventListener('touchstart', startMusicOnFirstInteraction, { passive: true });
-      musicStartOverlay.addEventListener('pointerdown', startMusicOnFirstInteraction, { passive: true });
-      musicStartOverlay.addEventListener('touchmove', startMusicOnFirstInteraction, { passive: true });
-      musicStartOverlay.addEventListener('wheel', startMusicOnFirstInteraction, { passive: true });
-    }
-
-    if (floatingMute && bgMusic) {
-      floatingMute.addEventListener('click', () => {
-        if (bgMusic.paused) {
-          playMusicWithFade();
-        } else {
-          pauseMusicWithFade();
-        }
-
-        window.setTimeout(syncMuteButton, 60);
-      });
-
-      bgMusic.addEventListener('play', syncMuteButton);
-      bgMusic.addEventListener('pause', syncMuteButton);
-      syncMuteButton();
-    }
 
 
     const sanitizeSocialLinks = () => {

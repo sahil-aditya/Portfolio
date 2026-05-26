@@ -150,8 +150,19 @@
     const musicStartOverlay = document.getElementById('musicStartOverlay');
     let hasStartedMusic = false;
 
+    let fadeTimeoutId = null;
+
+    const clearFadeAudio = () => {
+      if (fadeTimeoutId) {
+        window.clearTimeout(fadeTimeoutId);
+        fadeTimeoutId = null;
+      }
+    };
+
     const fadeAudio = (targetVolume, durationMs, callback) => {
       if (!bgMusic) return;
+      clearFadeAudio();
+
       const startVolume = bgMusic.volume;
       const steps = Math.max(1, Math.round(durationMs / 50));
       let step = 0;
@@ -162,10 +173,11 @@
         bgMusic.volume = startVolume + ((targetVolume - startVolume) * progress);
 
         if (progress < 1) {
-          window.setTimeout(tick, 50);
+          fadeTimeoutId = window.setTimeout(tick, 50);
           return;
         }
 
+        fadeTimeoutId = null;
         if (callback) callback();
       };
 
@@ -196,8 +208,9 @@
 
     const pauseMusicWithFade = () => {
       if (!bgMusic || bgMusic.paused) return;
-      fadeAudio(0, 3000, () => {
+      fadeAudio(0, 1000, () => {
         bgMusic.pause();
+        bgMusic.volume = 1;
       });
     };
 
@@ -242,6 +255,8 @@
       musicStartOverlay.addEventListener('click', startMusicOnFirstInteraction);
       musicStartOverlay.addEventListener('touchstart', startMusicOnFirstInteraction, { passive: true });
       musicStartOverlay.addEventListener('pointerdown', startMusicOnFirstInteraction, { passive: true });
+      musicStartOverlay.addEventListener('touchmove', startMusicOnFirstInteraction, { passive: true });
+      musicStartOverlay.addEventListener('wheel', startMusicOnFirstInteraction, { passive: true });
     }
 
     if (floatingMute && bgMusic) {

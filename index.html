@@ -143,6 +143,39 @@
       });
     };
 
+    const pairCache = new Map();
+
+    const warmImage = (url) => new Promise((resolve, reject) => {
+      const cached = pairCache.get(url);
+      if (cached?.status === 'loaded') {
+        resolve(cached.img);
+        return;
+      }
+
+      if (cached?.status === 'loading') {
+        cached.promise.then(resolve).catch(reject);
+        return;
+      }
+
+      const img = new Image();
+      img.decoding = 'async';
+
+      const promise = new Promise((innerResolve, innerReject) => {
+        img.onload = () => {
+          pairCache.set(url, { status: 'loaded', img });
+          innerResolve(img);
+        };
+        img.onerror = () => {
+          pairCache.delete(url);
+          innerReject(new Error(`Unable to load ${url}`));
+        };
+      });
+
+      pairCache.set(url, { status: 'loading', promise });
+      img.src = url;
+      promise.then(resolve).catch(reject);
+    });
+
     async function loadGallery() {
       try {
         const response = await fetch('./images.json');
@@ -154,11 +187,20 @@
           card.className = 'gallery-item loading';
           card.setAttribute('tabindex', '0');
 
-          card.innerHTML = `
-            <img src="${item.afterImage}" alt="Edited visual ${item.id}" loading="lazy" />
-          `;
+          card.innerHTML = `<img src="${item.afterImage}" alt="Edited visual ${item.id}" loading="lazy" decoding="async" />`;
 
           const image = card.querySelector('img');
+          const imagePair = [item.afterImage, item.beforeImage];
+          image.dataset.after = item.afterImage;
+          image.dataset.before = item.beforeImage;
+          image.dataset.showing = 'after';
+
+          Promise.allSettled(imagePair.map((url) => warmImage(url))).then((results) => {
+            const allRejected = results.every((result) => result.status === 'rejected');
+            if (allRejected) {
+              card.remove();
+            }
+          });
 
           image.addEventListener('load', () => {
             card.classList.remove('loading');
@@ -167,29 +209,45 @@
           });
 
 
-          let showingAfter = true;
-          const toggleImage = () => {
+          const toggleImage = async () => {
+            if (card.dataset.toggling === 'true') return;
+            card.dataset.toggling = 'true';
+
+            const isShowingAfter = image.dataset.showing === 'after';
+            const nextUrl = isShowingAfter ? image.dataset.before : image.dataset.after;
             card.classList.add('fade-switch');
-            setTimeout(() => {
-              showingAfter = !showingAfter;
-              image.src = showingAfter ? item.afterImage : item.beforeImage;
-            }, 170);
+
+            try {
+              await warmImage(nextUrl);
+              image.src = nextUrl;
+              image.dataset.showing = isShowingAfter ? 'before' : 'after';
+            } catch (error) {
+              console.error(error);
+              card.classList.remove('fade-switch');
+              card.dataset.toggling = 'false';
+            }
           };
 
           image.addEventListener('error', () => {
+            const failedUrl = image.src;
+            pairCache.delete(failedUrl);
             if (image.dataset.failedToggle === 'true') {
               card.remove();
               return;
             }
 
             image.dataset.failedToggle = 'true';
-            showingAfter = !showingAfter;
-            image.src = showingAfter ? item.afterImage : item.beforeImage;
+            const isShowingAfter = image.dataset.showing === 'after';
+            const fallbackUrl = isShowingAfter ? image.dataset.before : image.dataset.after;
+            image.src = fallbackUrl;
+            image.dataset.showing = isShowingAfter ? 'before' : 'after';
             card.classList.remove('fade-switch');
+            card.dataset.toggling = 'false';
           });
 
           image.addEventListener('load', () => {
             card.classList.remove('fade-switch');
+            card.dataset.toggling = 'false';
           });
 
           card.addEventListener('click', toggleImage);

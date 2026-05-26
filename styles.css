@@ -226,9 +226,44 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
 
 @media (min-width: 700px) { .masonry { columns: 2; } }
 @media (min-width: 1024px) { .masonry { columns: 3; } }
+
 @media (max-width: 900px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .hero-portrait { order: -1; }
+  .section { width: min(1180px, 94vw); }
+  .hero { min-height: auto; }
+  .hero-grid { grid-template-columns: 1fr; gap: 1.35rem; }
+  .hero-copy { padding: 0.25rem 0.25rem 0; }
+  .hero-portrait {
+    order: 0;
+    border-radius: 28px;
+    padding: 0.65rem;
+  }
+  .hero-portrait img {
+    border-radius: 22px;
+    max-height: 68vh;
+  }
+  .cta-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .btn {
+    text-align: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .top-nav { padding: 0.8rem 1rem; }
+  .brand { font-size: 0.78rem; }
+  h1 { font-size: clamp(2.25rem, 13vw, 3.7rem); }
+  .subtitle { font-size: 0.96rem; }
+  .lead { font-size: 0.96rem; }
+  .about-card { padding: 1.25rem; }
+  .skill-grid { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+  .social-grid { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+  .cta-row { grid-template-columns: 1fr; }
+  .masonry { column-gap: 0.85rem; }
+  .gallery-item { border-radius: 15px; }
 }
 
 @keyframes float { to { transform: translateY(36px) translateX(16px); } }

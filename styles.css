@@ -243,6 +243,31 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
 }
 
 .error { color: #ffffff; border: 1px solid #ffffff; padding: 1rem; border-radius: 12px; }
+
+.floating-toggle-hint {
+  position: fixed;
+  bottom: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.67rem;
+  letter-spacing: 0.03em;
+  color: #f1f1f1;
+  z-index: 6;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+.footer-note {
+  margin: 0.8rem auto 0;
+  max-width: 58ch;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: #bdbdbd;
+}
 .footer { text-align: center; color: var(--muted); padding-bottom: 3rem; }
 .signature { font-family: "Syne", sans-serif; color: var(--text); }
 
@@ -266,6 +291,15 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
 
 @media (max-width: 900px) {
   .section { width: min(1180px, 94vw); }
+  .floating-toggle-hint {
+    width: max-content;
+    max-width: calc(100vw - 1.2rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    bottom: 0.7rem;
+  }
+
   .hero { min-height: auto; }
   .hero-grid { grid-template-columns: 1fr; gap: 1.35rem; }
   .hero-copy { padding: 0.25rem 0.25rem 0; }

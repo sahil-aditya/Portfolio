@@ -126,11 +126,13 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
   padding: 0.75rem;
   background: linear-gradient(160deg, rgba(127, 155, 255, 0.4), rgba(187, 125, 255, 0.2));
 }
-.hero-portrait img {
+.hero-portrait .imgur-embed-pub {
+  margin: 0;
+}
+.hero-portrait iframe {
   display: block;
   width: 100%;
   border-radius: 26px;
-  object-fit: cover;
   max-height: 76vh;
 }
 
@@ -237,7 +239,7 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
     border-radius: 28px;
     padding: 0.65rem;
   }
-  .hero-portrait img {
+  .hero-portrait iframe {
     border-radius: 22px;
     max-height: 68vh;
   }

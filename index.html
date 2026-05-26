@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="cursor-glow" id="cursorGlow"></div>
+  <div class="touch-meteor" id="touchMeteor"></div>
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
   <div class="grain"></div>
@@ -86,12 +86,33 @@
 
   <script>
     const galleryGrid = document.getElementById('galleryGrid');
-    const cursorGlow = document.getElementById('cursorGlow');
+    const touchMeteor = document.getElementById('touchMeteor');
+    let meteorX = window.innerWidth * 0.5;
+    let meteorY = window.innerHeight * 0.5;
+    let targetX = meteorX;
+    let targetY = meteorY;
 
-    document.addEventListener('mousemove', (e) => {
-      cursorGlow.style.left = `${e.clientX}px`;
-      cursorGlow.style.top = `${e.clientY}px`;
-    });
+    const animateMeteor = () => {
+      meteorX += (targetX - meteorX) * 0.25;
+      meteorY += (targetY - meteorY) * 0.25;
+      touchMeteor.style.left = `${meteorX}px`;
+      touchMeteor.style.top = `${meteorY}px`;
+      requestAnimationFrame(animateMeteor);
+    };
+    animateMeteor();
+
+    const updateTouchPoint = (x, y) => {
+      targetX = x;
+      targetY = y;
+      touchMeteor.classList.add('active');
+    };
+
+    document.addEventListener('mousemove', (e) => updateTouchPoint(e.clientX, e.clientY));
+    document.addEventListener('touchmove', (e) => {
+      const [touch] = e.touches;
+      if (touch) updateTouchPoint(touch.clientX, touch.clientY);
+    }, { passive: true });
+    document.addEventListener('mouseleave', () => touchMeteor.classList.remove('active'));
 
     async function loadGallery() {
       try {

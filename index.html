@@ -155,16 +155,25 @@
           card.setAttribute('tabindex', '0');
 
           card.innerHTML = `
-            <img src="${item.afterImage}" alt="Edited visual ${item.id}" loading="lazy" />
+            <img src="${item.afterImage}" alt="Edited visual ${item.id}" loading="lazy" decoding="async" fetchpriority="low" />
           `;
 
           const image = card.querySelector('img');
+          const preloadPair = () => {
+            [item.afterImage, item.beforeImage].forEach((src) => {
+              if (!src) return;
+              const preloader = new Image();
+              preloader.decoding = 'async';
+              preloader.src = src;
+            });
+          };
 
           image.addEventListener('load', () => {
             card.classList.remove('loading');
             card.style.animationDelay = `${index * 40}ms`;
             card.classList.add('loaded');
-          });
+            preloadPair();
+          }, { once: true });
 
 
           let showingAfter = true;
@@ -193,6 +202,10 @@
           });
 
           card.addEventListener('click', toggleImage);
+          card.addEventListener('pointerenter', preloadPair, { passive: true });
+          card.addEventListener('focus', preloadPair, { passive: true });
+          card.addEventListener('touchstart', preloadPair, { passive: true });
+
           card.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
               event.preventDefault();

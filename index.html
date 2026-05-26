@@ -23,6 +23,7 @@
 </head>
 <body>
   <div class="touch-meteor" id="touchMeteor"></div>
+  <button class="music-start-overlay" id="musicStartOverlay" type="button" aria-label="Tap to start background music"></button>
   <div class="bg-orb orb-1"></div>
   <div class="bg-orb orb-2"></div>
   <div class="grain"></div>
@@ -146,6 +147,7 @@
       bgMusic.load();
     }
     const floatingMute = document.getElementById('floatingMute');
+    const musicStartOverlay = document.getElementById('musicStartOverlay');
     let hasStartedMusic = false;
 
     const fadeAudio = (targetVolume, durationMs, callback) => {
@@ -170,7 +172,7 @@
       tick();
     };
 
-    const startMusicOnFirstScroll = async () => {
+    const startMusicOnFirstInteraction = async () => {
       if (hasStartedMusic || !bgMusic) return;
       hasStartedMusic = true;
       bgMusic.volume = 0;
@@ -179,6 +181,14 @@
         await bgMusic.play();
         fadeAudio(1, 3000);
         removeStartMusicListeners();
+        if (musicStartOverlay) {
+          musicStartOverlay.classList.add('is-hidden');
+          musicStartOverlay.setAttribute('aria-hidden', 'true');
+          window.setTimeout(() => musicStartOverlay.remove(), 220);
+        }
+        if (floatingMute) {
+          floatingMute.classList.add('is-visible');
+        }
       } catch (error) {
         hasStartedMusic = false;
       }
@@ -220,13 +230,19 @@
 
     const removeStartMusicListeners = () => {
       startMusicTriggers.forEach(([eventName, options]) => {
-        document.removeEventListener(eventName, startMusicOnFirstScroll, options);
+        document.removeEventListener(eventName, startMusicOnFirstInteraction, options);
       });
     };
 
     startMusicTriggers.forEach(([eventName, options]) => {
-      document.addEventListener(eventName, startMusicOnFirstScroll, options);
+      document.addEventListener(eventName, startMusicOnFirstInteraction, options);
     });
+
+    if (musicStartOverlay) {
+      musicStartOverlay.addEventListener('click', startMusicOnFirstInteraction);
+      musicStartOverlay.addEventListener('touchstart', startMusicOnFirstInteraction, { passive: true });
+      musicStartOverlay.addEventListener('pointerdown', startMusicOnFirstInteraction, { passive: true });
+    }
 
     if (floatingMute && bgMusic) {
       floatingMute.addEventListener('click', () => {

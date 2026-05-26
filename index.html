@@ -91,10 +91,11 @@
     let meteorY = window.innerHeight * 0.5;
     let targetX = meteorX;
     let targetY = meteorY;
+    let lastTouchPoint = null;
 
     const animateMeteor = () => {
-      meteorX += (targetX - meteorX) * 0.25;
-      meteorY += (targetY - meteorY) * 0.25;
+      meteorX += (targetX - meteorX) * 0.28;
+      meteorY += (targetY - meteorY) * 0.28;
       touchMeteor.style.left = `${meteorX}px`;
       touchMeteor.style.top = `${meteorY}px`;
       requestAnimationFrame(animateMeteor);
@@ -104,15 +105,32 @@
     const updateTouchPoint = (x, y) => {
       targetX = x;
       targetY = y;
+      lastTouchPoint = { x, y };
       touchMeteor.classList.add('active');
     };
 
-    document.addEventListener('mousemove', (e) => updateTouchPoint(e.clientX, e.clientY));
-    document.addEventListener('touchmove', (e) => {
-      const [touch] = e.touches;
+    const hideTouchMeteor = () => {
+      lastTouchPoint = null;
+      touchMeteor.classList.remove('active');
+    };
+
+    document.addEventListener('touchstart', (event) => {
+      const [touch] = event.touches;
       if (touch) updateTouchPoint(touch.clientX, touch.clientY);
     }, { passive: true });
-    document.addEventListener('mouseleave', () => touchMeteor.classList.remove('active'));
+
+    document.addEventListener('touchmove', (event) => {
+      const [touch] = event.touches;
+      if (touch) updateTouchPoint(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    document.addEventListener('touchend', hideTouchMeteor, { passive: true });
+    document.addEventListener('touchcancel', hideTouchMeteor, { passive: true });
+    document.addEventListener('scroll', () => {
+      if (lastTouchPoint) {
+        updateTouchPoint(lastTouchPoint.x, lastTouchPoint.y);
+      }
+    }, { passive: true });
 
     async function loadGallery() {
       try {

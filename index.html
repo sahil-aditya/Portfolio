@@ -178,6 +178,7 @@
       try {
         await bgMusic.play();
         fadeAudio(1, 3000);
+        removeStartMusicListeners();
       } catch (error) {
         hasStartedMusic = false;
       }
@@ -209,7 +210,23 @@
       floatingMute.classList.toggle('is-paused', isPaused);
     };
 
-    document.addEventListener('scroll', startMusicOnFirstScroll, { passive: true, once: true });
+    const startMusicTriggers = [
+      ['scroll', { passive: true }],
+      ['wheel', { passive: true }],
+      ['touchstart', { passive: true }],
+      ['pointerdown', { passive: true }],
+      ['keydown', {}]
+    ];
+
+    const removeStartMusicListeners = () => {
+      startMusicTriggers.forEach(([eventName, options]) => {
+        document.removeEventListener(eventName, startMusicOnFirstScroll, options);
+      });
+    };
+
+    startMusicTriggers.forEach(([eventName, options]) => {
+      document.addEventListener(eventName, startMusicOnFirstScroll, options);
+    });
 
     if (floatingMute && bgMusic) {
       floatingMute.addEventListener('click', () => {

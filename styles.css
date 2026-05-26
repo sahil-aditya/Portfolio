@@ -330,3 +330,41 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
     transform: translateY(0);
   }
                    }
+
+.floating-toggle-hint {
+  left: auto;
+  right: 0.9rem;
+  transform: none;
+  bottom: 0.9rem;
+  max-width: 58vw;
+  text-align: center;
+}
+
+.floating-mute {
+  position: fixed;
+  bottom: 0.9rem;
+  right: calc(0.9rem + min(58vw, 320px) + 0.5rem);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 0.67rem;
+  padding: 0.45rem 0.85rem;
+  z-index: 7;
+  cursor: pointer;
+}
+
+.floating-mute.is-paused {
+  opacity: 0.78;
+}
+
+@media (max-width: 720px) {
+  .floating-mute {
+    right: 0.9rem;
+    bottom: 3.1rem;
+  }
+
+  .floating-toggle-hint {
+    max-width: 78vw;
+  }
+}

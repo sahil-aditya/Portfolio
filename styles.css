@@ -56,15 +56,35 @@ body {
 .orb-1 { background: #637cff; top: -12vw; left: -10vw; }
 .orb-2 { background: #b16dff; bottom: -20vw; right: -14vw; animation-delay: 2s; }
 
-.cursor-glow {
+.touch-meteor {
   position: fixed;
-  width: 220px;
-  height: 220px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(126, 151, 255, 0.2), rgba(126, 151, 255, 0));
+  background: radial-gradient(circle at 35% 35%, #f3f8ff 0%, #a9bcff 42%, rgba(96, 123, 255, 0.35) 70%, rgba(96, 123, 255, 0) 100%);
   transform: translate(-50%, -50%);
-  z-index: 0;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  box-shadow: 0 0 14px rgba(168, 188, 255, 0.85), 0 0 34px rgba(109, 136, 255, 0.5);
+}
+
+.touch-meteor::before {
+  content: "";
+  position: absolute;
+  width: 56px;
+  height: 12px;
+  top: 50%;
+  right: 50%;
+  transform: translate(14px, -50%);
+  background: linear-gradient(90deg, rgba(154, 178, 255, 0), rgba(154, 178, 255, 0.5), rgba(243, 248, 255, 0.85));
+  filter: blur(1px);
+  border-radius: 999px;
+}
+
+.touch-meteor.active {
+  opacity: 1;
 }
 
 .section {

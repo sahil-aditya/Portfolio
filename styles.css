@@ -87,22 +87,6 @@ body {
   opacity: 1;
 }
 
-.music-start-overlay {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  background: transparent;
-  z-index: 9;
-  cursor: pointer;
-}
-
-.music-start-overlay.is-hidden {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
 
 .section {
   width: min(1180px, 92vw);
@@ -357,38 +341,8 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
   text-align: center;
 }
 
-.floating-mute {
-  position: fixed;
-  bottom: 0.9rem;
-  right: calc(0.9rem + min(58vw, 320px) + 0.5rem);
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 0.67rem;
-  padding: 0.45rem 0.85rem;
-  z-index: 7;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-.floating-mute.is-visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.floating-mute.is-paused {
-  opacity: 0.78;
-}
 
 @media (max-width: 720px) {
-  .floating-mute {
-    right: 0.9rem;
-    bottom: 3.1rem;
-  }
-
   .floating-toggle-hint {
     max-width: 78vw;
   }

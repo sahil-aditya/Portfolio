@@ -235,8 +235,7 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
 .reveal.visible { opacity: 1; transform: translateY(0); }
 .delay-1 { transition-delay: 0.12s; }
 
-@media (min-width: 700px) { .masonry { columns: 2; } }
-@media (min-width: 1024px) {
+@media (min-width: 700px) {
   .masonry {
     columns: unset;
     display: grid;

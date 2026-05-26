@@ -220,12 +220,11 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
   width: 100%;
   height: auto;
   display: block;
-  transition: transform 0.4s ease, opacity 0.35s ease;
+  transition: opacity 0.45s ease-in-out;
 }
-.gallery-item:hover img { transform: scale(1.03); }
 .gallery-item.loading { min-height: 220px; }
 .gallery-item.loaded { animation: revealUp 0.6s ease forwards; }
-.gallery-item.fade-switch img { opacity: 0.2; }
+.gallery-item.fade-switch img { opacity: 0; }
 
 .gallery-item {
   -webkit-tap-highlight-color: transparent;
@@ -236,6 +235,11 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
 .gallery-item:focus-visible {
   outline: none;
   box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7);
+}
+.gallery-item.fade-switch,
+.gallery-item.fade-switch:focus,
+.gallery-item.fade-switch:focus-visible {
+  box-shadow: none;
 }
 
 .error { color: #ffffff; border: 1px solid #ffffff; padding: 1rem; border-radius: 12px; }

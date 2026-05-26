@@ -65,12 +65,12 @@
   <section class="social section reveal" id="contact">
     <h2>Connect</h2>
     <div class="social-grid">
-      <a href="#" class="social-btn">Instagram</a>
-      <a href="https://linktr.ee/sahil.aditya" class="social-btn">Website</a>
-      <a href="#" class="social-btn">Behance</a>
-      <a href="#" class="social-btn">Pinterest</a>
-      <a href="#" class="social-btn">YouTube</a>
-      <a href="mailto:sahilmaurya321@yahoo.com" class="social-btn">Email</a>
+      <a href="#" class="social-btn" data-social-link>Instagram</a>
+      <a href="https://linktr.ee/sahil.aditya" class="social-btn" data-social-link>Website</a>
+      <a href="#" class="social-btn" data-social-link>Behance</a>
+      <a href="#" class="social-btn" data-social-link>Pinterest</a>
+      <a href="#" class="social-btn" data-social-link>YouTube</a>
+      <a href="mailto:sahilmaurya321@yahoo.com" class="social-btn" data-social-link>Email</a>
     </div>
   </section>
 
@@ -132,6 +132,17 @@
       }
     }, { passive: true });
 
+
+    const sanitizeSocialLinks = () => {
+      document.querySelectorAll('[data-social-link]').forEach((link) => {
+        const href = (link.getAttribute('href') || '').trim();
+        const isMissing = !href || href === '#' || href.toLowerCase() === 'null' || href.toLowerCase() === 'undefined';
+        if (isMissing) {
+          link.style.display = 'none';
+        }
+      });
+    };
+
     async function loadGallery() {
       try {
         const response = await fetch('./images.json');
@@ -155,6 +166,7 @@
             card.classList.add('loaded');
           });
 
+
           let showingAfter = true;
           const toggleImage = () => {
             card.classList.add('fade-switch');
@@ -163,6 +175,18 @@
               image.src = showingAfter ? item.afterImage : item.beforeImage;
             }, 170);
           };
+
+          image.addEventListener('error', () => {
+            if (image.dataset.failedToggle === 'true') {
+              card.remove();
+              return;
+            }
+
+            image.dataset.failedToggle = 'true';
+            showingAfter = !showingAfter;
+            image.src = showingAfter ? item.afterImage : item.beforeImage;
+            card.classList.remove('fade-switch');
+          });
 
           image.addEventListener('load', () => {
             card.classList.remove('fade-switch');
@@ -193,6 +217,7 @@
     }, { threshold: 0.2 });
 
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    sanitizeSocialLinks();
     loadGallery();
   </script>
 </body>

@@ -223,17 +223,6 @@ h1 { font-family: "Syne", sans-serif; font-size: clamp(2.8rem, 8vw, 6rem); margi
   transition: transform 0.4s ease, opacity 0.35s ease;
 }
 .gallery-item:hover img { transform: scale(1.03); }
-.gallery-item .label {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(12, 16, 29, 0.75);
-  border: 1px solid rgba(171, 187, 255, 0.55);
-  padding: 0.35rem 0.55rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-}
 .gallery-item.loading { min-height: 220px; }
 .gallery-item.loaded { animation: revealUp 0.6s ease forwards; }
 .gallery-item.fade-switch img { opacity: 0.2; }

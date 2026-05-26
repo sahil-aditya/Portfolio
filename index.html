@@ -144,12 +144,10 @@
           card.setAttribute('tabindex', '0');
 
           card.innerHTML = `
-            <div class="label">AFTER</div>
             <img src="${item.afterImage}" alt="Edited visual ${item.id}" loading="lazy" />
           `;
 
           const image = card.querySelector('img');
-          const label = card.querySelector('.label');
 
           image.addEventListener('load', () => {
             card.classList.remove('loading');
@@ -163,7 +161,6 @@
             setTimeout(() => {
               showingAfter = !showingAfter;
               image.src = showingAfter ? item.afterImage : item.beforeImage;
-              label.textContent = showingAfter ? 'AFTER' : 'BEFORE';
             }, 170);
           };
 

@@ -21,11 +21,37 @@
   <link rel="stylesheet" href="styles.css" />
   
   <style>
-    /* Added CSS for Skeleton Loading State 
-      Ensures the gallery doesn't look "empty" while waiting for network requests
+    /* 1. Structural CSS for Left-to-Right Masonry 
+      This overrides standard CSS column behaviors to force the 1-2, 3-4 order
     */
+    #galleryGrid.masonry {
+      display: flex;
+      gap: 1.5rem; /* Adjust this value to match your preferred spacing */
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .masonry-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem; /* Keep this the same as the gap above */
+      flex: 1; /* Ensures both columns are exactly 50% width */
+      width: calc(50% - 0.75rem);
+    }
+
+    /* Stack to 1 column on mobile */
+    @media (max-width: 768px) {
+      #galleryGrid.masonry {
+        flex-direction: column;
+      }
+      .masonry-col {
+        width: 100%;
+      }
+    }
+
+    /* 2. Skeleton Loading State */
     .gallery-item.loading {
-      min-height: 350px; /* Gives the masonry grid immediate structure */
+      min-height: 350px;
       background: rgba(255, 255, 255, 0.03);
       border-radius: 4px;
       animation: pulse-skeleton 1.5s infinite ease-in-out;
@@ -186,6 +212,17 @@
         const data = await response.json();
         const items = data.gallery || [];
 
+        // 1. Create two distinct columns
+        const leftCol = document.createElement('div');
+        leftCol.className = 'masonry-col';
+        
+        const rightCol = document.createElement('div');
+        rightCol.className = 'masonry-col';
+
+        // 2. Append columns to the main grid
+        galleryGrid.appendChild(leftCol);
+        galleryGrid.appendChild(rightCol);
+
         items.forEach((item, index) => {
           if (!item.beforeImage || !item.afterImage) {
             return; 
@@ -195,7 +232,6 @@
           card.className = 'gallery-item loading';
           card.setAttribute('tabindex', '0');
 
-          // Added filter: blur(20px) and scale(1.05) to initial inline styles
           card.innerHTML = `
             <div style="position: relative; width: 100%; height: 100%;">
               <img src="${item.beforeImage}" class="before-img" alt="Raw visual ${item.id}" loading="lazy" decoding="async" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);" />
@@ -208,22 +244,18 @@
           const afterImg = card.querySelector('.after-img');
 
           afterImg.addEventListener('load', () => {
-            // Remove skeleton pulse animation
             card.classList.remove('loading');
-            card.style.minHeight = 'auto'; // Let the real image dictate height
+            card.style.minHeight = 'auto'; 
             card.style.animationDelay = `${index * 40}ms`;
             card.classList.add('loaded');
 
-            // Trigger the cinematic de-blur and fade-in
             afterImg.style.opacity = '1';
             afterImg.style.filter = 'blur(0px)';
             afterImg.style.transform = 'scale(1)';
             
-            // Prep the before image so it's sharp when toggled
             beforeImg.style.filter = 'blur(0px)';
             beforeImg.style.transform = 'scale(1)';
 
-            // Reset transition to normal speed for snappy tapping AFTER the load animation finishes
             setTimeout(() => {
               afterImg.style.transition = 'opacity 0.25s ease-in-out';
               beforeImg.style.transition = 'opacity 0.25s ease-in-out';
@@ -257,7 +289,12 @@
             }
           });
 
-          galleryGrid.appendChild(card);
+          // 3. Alternate dropping items into left and right columns
+          if (index % 2 === 0) {
+            leftCol.appendChild(card);  // Evens (0, 2, 4) go left -> (Items 1, 3, 5)
+          } else {
+            rightCol.appendChild(card); // Odds (1, 3, 5) go right -> (Items 2, 4, 6)
+          }
         });
       } catch (error) {
         galleryGrid.innerHTML = '<p class="error">Unable to load gallery at the moment.</p>';

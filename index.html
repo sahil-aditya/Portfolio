@@ -81,7 +81,6 @@
 
   <div class="floating-toggle-hint glass" aria-hidden="true">Tap images to switch Graded↕RAW</div>
 
-
   <footer class="footer section reveal">
     <p class="signature">SAM — Light. Tone. Emotion.</p>
     <p>© 2026 SAM. All rights reserved.</p>
@@ -154,6 +153,11 @@
         const items = data.gallery || [];
 
         items.forEach((item, index) => {
+          // Pre-check: Agar dono me se koi bhi link JSON me missing hai toh skip kardo
+          if (!item.beforeImage || !item.afterImage) {
+            return; 
+          }
+
           const card = document.createElement('article');
           card.className = 'gallery-item loading';
           card.setAttribute('tabindex', '0');
@@ -168,6 +172,15 @@
           const beforeImg = card.querySelector('.before-img');
           const afterImg = card.querySelector('.after-img');
 
+          // Error Handling: Agar dono me se koi bhi image load hone me fail hui (e.g. 404), toh card remove ho jayega
+          const handleImageError = () => {
+            card.remove();
+          };
+
+          beforeImg.addEventListener('error', handleImageError);
+          afterImg.addEventListener('error', handleImageError);
+
+          // Success Load Handling
           afterImg.addEventListener('load', () => {
             card.classList.remove('loading');
             card.style.animationDelay = `${index * 40}ms`;

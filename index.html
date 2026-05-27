@@ -88,6 +88,18 @@
   </footer>
 
   <script>
+    // --- Global UI Sound Effect Setup ---
+    const tapSound = new Audio('https://sahil-aditya.github.io/Creative_Gallery/images/click.mp3'); 
+    tapSound.volume = 0.5; // Adjust between 0.0 (mute) and 1.0 (max volume)
+
+    document.addEventListener('click', () => {
+      tapSound.currentTime = 0; // Reset instantly for rapid tapping
+      tapSound.play().catch(() => {
+        // Fails silently if the browser blocks audio on the very first tap
+      });
+    });
+    // ------------------------------------
+
     const galleryGrid = document.getElementById('galleryGrid');
     const touchMeteor = document.getElementById('touchMeteor');
     let meteorX = window.innerWidth * 0.5;
@@ -134,7 +146,6 @@
         updateTouchPoint(lastTouchPoint.x, lastTouchPoint.y);
       }
     }, { passive: true });
-
 
     const sanitizeSocialLinks = () => {
       document.querySelectorAll('[data-social-link]').forEach((link) => {
@@ -231,4 +242,4 @@
   </script>
 </body>
   </html>
-  
+      

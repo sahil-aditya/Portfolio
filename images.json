@@ -1,11 +1,6 @@
 {
   "gallery": [
   {
-    "id": "1",
-    "beforeImage": " ",
-    "afterImage": " "
-  },
-  {
     "id": "2",
     "beforeImage": "https://sahil-aditya.github.io/Creative_Gallery/images/before21.jpg",
     "afterImage": "https://sahil-aditya.github.io/Creative_Gallery/images/after21.jpg"

@@ -88,18 +88,6 @@
   </footer>
 
   <script>
-    // --- Global UI Sound Effect Setup ---
-    const tapSound = new Audio('https://sahil-aditya.github.io/Creative_Gallery/images/click.mp3'); 
-    tapSound.volume = 0.5; // Adjust between 0.0 (mute) and 1.0 (max volume)
-
-    document.addEventListener('click', () => {
-      tapSound.currentTime = 0; // Reset instantly for rapid tapping
-      tapSound.play().catch(() => {
-        // Fails silently if the browser blocks audio on the very first tap
-      });
-    });
-    // ------------------------------------
-
     const galleryGrid = document.getElementById('galleryGrid');
     const touchMeteor = document.getElementById('touchMeteor');
     let meteorX = window.innerWidth * 0.5;
@@ -164,7 +152,6 @@
         const items = data.gallery || [];
 
         items.forEach((item, index) => {
-          // Pre-check: Agar dono me se koi bhi link JSON me missing hai toh skip kardo
           if (!item.beforeImage || !item.afterImage) {
             return; 
           }
@@ -183,7 +170,6 @@
           const beforeImg = card.querySelector('.before-img');
           const afterImg = card.querySelector('.after-img');
 
-          // Error Handling: Agar dono me se koi bhi image load hone me fail hui (e.g. 404), toh card remove ho jayega
           const handleImageError = () => {
             card.remove();
           };
@@ -191,7 +177,6 @@
           beforeImg.addEventListener('error', handleImageError);
           afterImg.addEventListener('error', handleImageError);
 
-          // Success Load Handling
           afterImg.addEventListener('load', () => {
             card.classList.remove('loading');
             card.style.animationDelay = `${index * 40}ms`;
@@ -237,9 +222,35 @@
     }, { threshold: 0.2 });
 
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    
+    // Core Functions trigger first
     sanitizeSocialLinks();
     loadGallery();
+
+    // --- Global UI Sound Effect Setup (Isolated at the bottom) ---
+    try {
+      const tapSound = new Audio('https://sahil-aditya.github.io/Creative_Gallery/images/click.mp3'); 
+      tapSound.volume = 0.5;
+
+      document.addEventListener('click', () => {
+        try {
+          // Check if audio metadata is loaded before resetting time
+          if (tapSound.readyState >= 1) {
+            tapSound.currentTime = 0; 
+          }
+          const playPromise = tapSound.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => { /* Fails silently if blocked */ });
+          }
+        } catch (err) {
+          // Prevents rapid clicking from throwing exceptions
+        }
+      });
+    } catch (error) {
+      console.warn("Sound effect disabled to prevent script block.");
+    }
+    // -------------------------------------------------------------
   </script>
 </body>
-  </html>
-      
+                                                                                                                                                     </html>
+  

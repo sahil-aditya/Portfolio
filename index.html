@@ -88,6 +88,20 @@
   </footer>
 
   <script>
+    // --- UI Click Sound Effect ---
+    const clickAudio = new Audio('https://sahil-aditya.github.io/Creative_Gallery/images/click.mp3');
+    clickAudio.preload = 'auto'; 
+
+    const playUiSound = () => {
+      const soundClone = clickAudio.cloneNode();
+      soundClone.play().catch(error => {
+        console.warn('Audio playback blocked by browser:', error);
+      });
+    };
+
+    document.addEventListener('click', playUiSound);
+
+    // --- Existing Functionality ---
     const galleryGrid = document.getElementById('galleryGrid');
     const touchMeteor = document.getElementById('touchMeteor');
     let meteorX = window.innerWidth * 0.5;
@@ -135,7 +149,6 @@
       }
     }, { passive: true });
 
-
     const sanitizeSocialLinks = () => {
       document.querySelectorAll('[data-social-link]').forEach((link) => {
         const href = (link.getAttribute('href') || '').trim();
@@ -153,7 +166,7 @@
         const items = data.gallery || [];
 
         items.forEach((item, index) => {
-          // Pre-check: Agar dono me se koi bhi link JSON me missing hai toh skip kardo
+          // Normal Error Handling: Skip card ONLY if values are empty in JSON
           if (!item.beforeImage || !item.afterImage) {
             return; 
           }
@@ -172,19 +185,17 @@
           const beforeImg = card.querySelector('.before-img');
           const afterImg = card.querySelector('.after-img');
 
-          // Error Handling: Agar dono me se koi bhi image load hone me fail hui (e.g. 404), toh card remove ho jayega
-          const handleImageError = () => {
-            card.remove();
-          };
-
-          beforeImg.addEventListener('error', handleImageError);
-          afterImg.addEventListener('error', handleImageError);
-
           // Success Load Handling
           afterImg.addEventListener('load', () => {
             card.classList.remove('loading');
             card.style.animationDelay = `${index * 40}ms`;
             card.classList.add('loaded');
+          }, { once: true });
+
+          // Failsafe: Remove the loading animation if the image genuinely fails, so it doesn't spin forever. 
+          // The card is NOT removed, leaving standard browser fallback behavior.
+          afterImg.addEventListener('error', () => {
+            card.classList.remove('loading');
           }, { once: true });
 
           let showingAfter = true;

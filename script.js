@@ -1,6 +1,6 @@
 /**
  * SAM — Photographer & Colorist 
- * Premium High-Performance JavaScript
+ * Main JavaScript File
  */
 
 // ==========================================
@@ -75,7 +75,7 @@ document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
 
 // ==========================================
-// 4. Ultra-Fast Parallel Gallery Loader
+// 4. Standard Browser Gallery Loader
 // ==========================================
 const FALLBACK_RATIO = 0.72; 
 const gallery = document.getElementById('gallery'); 
@@ -111,14 +111,11 @@ function renderGallery(galleryData) {
   galleryData.forEach((item, index) => {
     if (!item.beforeImage || !item.afterImage) return;
 
-    // Identify top row items for max priority loading
-    const isTopRow = index < 2; 
-
     const card = document.createElement('article');
     card.className = 'card loading';
     card.setAttribute('tabindex', '0');
     card.style.aspectRatio = `${FALLBACK_RATIO}`;
-    card.style.order = index; // CSS Flexbox handles the mobile stacking order perfectly
+    card.style.order = index; // Flexbox handles mobile stacking perfectly
 
     const frame = document.createElement('div');
     frame.className = 'card-inner';
@@ -128,31 +125,22 @@ function renderGallery(galleryData) {
 
     const baseImgStyles = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);';
 
-    // Before Image setup
+    // Standard Before Image setup
     const beforeImg = document.createElement('img');
-    beforeImg.src = item.beforeImage; // Direct src injection (no dataset waiting)
+    beforeImg.src = item.beforeImage; 
     beforeImg.alt = `Raw visual ${index + 1}`;
     beforeImg.className = 'before-img';
     beforeImg.style.cssText = baseImgStyles;
-    beforeImg.loading = 'lazy'; // Always lazy load the 'before' image since it's hidden initially
-    beforeImg.decoding = 'async'; // Prevents heavy rendering from freezing the page
+    beforeImg.loading = 'lazy'; // Standard native lazy loading
 
-    // After Image setup
+    // Standard After Image setup
     const afterImg = document.createElement('img');
-    afterImg.src = item.afterImage; // Direct src injection
+    afterImg.src = item.afterImage; 
     afterImg.alt = `Gallery image ${index + 1}`;
     afterImg.className = 'after-img';
     afterImg.style.cssText = baseImgStyles;
     afterImg.style.zIndex = '1';
-    afterImg.decoding = 'async';
-
-    // PREMIUM PERFORMANCE: Force the top 2 cards to load instantly, lazy load the rest
-    if (isTopRow) {
-      afterImg.loading = 'eager';
-      afterImg.setAttribute('fetchpriority', 'high');
-    } else {
-      afterImg.loading = 'lazy';
-    }
+    afterImg.loading = 'lazy'; // Standard native lazy loading
 
     let showingAfter = true;
     const toggleImage = () => {
@@ -171,7 +159,7 @@ function renderGallery(galleryData) {
       card.addEventListener('mouseleave', () => viewerNote.style.display = 'none');
     }
 
-    // --- Onload Logic (Cinematic Deblur applied instantly upon natural load) ---
+    // Unhide the image naturally when the browser finishes downloading it
     afterImg.onload = () => {
       card.classList.remove('loading');
       
@@ -191,6 +179,7 @@ function renderGallery(galleryData) {
       }, 800);
     };
 
+    // Standard error fallback
     afterImg.onerror = () => {
       card.classList.remove('loading');
       afterImg.style.opacity = '1';
@@ -203,7 +192,7 @@ function renderGallery(galleryData) {
     frame.appendChild(afterImg);
     card.appendChild(frame);
 
-    // Distribute left/right for desktop masonry layout
+    // Distribute evenly for desktop masonry
     if (index % 2 === 0) leftCol.appendChild(card);
     else rightCol.appendChild(card);
   });
@@ -211,4 +200,3 @@ function renderGallery(galleryData) {
 
 // Boot up gallery
 loadGallery();
-      

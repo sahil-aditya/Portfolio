@@ -21,43 +21,21 @@
   <link rel="stylesheet" href="styles.css" />
   
   <style>
-    .img-blur-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      min-height: 300px; /* Prevents cards from collapsing to 0px while loading */
+    /* Added CSS for Skeleton Loading State 
+      Ensures the gallery doesn't look "empty" while waiting for network requests
+    */
+    .gallery-item.loading {
+      min-height: 350px; /* Gives the masonry grid immediate structure */
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 4px;
+      animation: pulse-skeleton 1.5s infinite ease-in-out;
       overflow: hidden;
-      background-color: #1a1a1a; /* Placeholder color to fill the empty space instantly */
-    }
-    
-    .lazy-image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      /* Initial blurred and scaled state */
-      filter: blur(20px);
-      transform: scale(1.1); 
-      /* Smooth transition for de-blurring */
-      transition: filter 0.8s ease-out, transform 0.8s ease-out, opacity 0.3s ease-in-out;
     }
 
-    /* Class applied via JS once the image fully downloads */
-    .lazy-image.img-loaded {
-      filter: blur(0px);
-      transform: scale(1);
-    }
-
-    .before-img {
-      z-index: 2;
-      opacity: 0;
-    }
-
-    .after-img {
-      z-index: 1;
-      opacity: 1;
+    @keyframes pulse-skeleton {
+      0% { background-color: rgba(255, 255, 255, 0.02); }
+      50% { background-color: rgba(255, 255, 255, 0.06); }
+      100% { background-color: rgba(255, 255, 255, 0.02); }
     }
   </style>
 </head>
@@ -142,8 +120,7 @@
 
     document.addEventListener('click', playUiSound);
 
-    // --- Existing Functionality ---
-    const galleryGrid = document.getElementById('galleryGrid');
+    // --- Meteor Effect ---
     const touchMeteor = document.getElementById('touchMeteor');
     let meteorX = window.innerWidth * 0.5;
     let meteorY = window.innerHeight * 0.5;
@@ -200,6 +177,9 @@
       });
     };
 
+    // --- Gallery Logic ---
+    const galleryGrid = document.getElementById('galleryGrid');
+
     async function loadGallery() {
       try {
         const response = await fetch('./images.json');
@@ -212,29 +192,47 @@
           }
 
           const card = document.createElement('article');
-          card.className = 'gallery-item';
+          card.className = 'gallery-item loading';
           card.setAttribute('tabindex', '0');
 
-          // Updated HTML structure for the blur wrapper
+          // Added filter: blur(20px) and scale(1.05) to initial inline styles
           card.innerHTML = `
-            <div class="img-blur-wrapper">
-              <img src="${item.beforeImage}" class="lazy-image before-img" alt="Raw visual ${item.id}" loading="lazy" decoding="async" />
-              <img src="${item.afterImage}" class="lazy-image after-img" alt="Edited visual ${item.id}" loading="lazy" decoding="async" />
+            <div style="position: relative; width: 100%; height: 100%;">
+              <img src="${item.beforeImage}" class="before-img" alt="Raw visual ${item.id}" loading="lazy" decoding="async" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);" />
+              
+              <img src="${item.afterImage}" class="after-img" alt="Edited visual ${item.id}" loading="lazy" decoding="async" fetchpriority="low" style="position: relative; z-index: 1; width: 100%; height: auto; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);" />
             </div>
           `;
 
           const beforeImg = card.querySelector('.before-img');
           const afterImg = card.querySelector('.after-img');
 
-          // Add the de-blur class as soon as the specific image finishes loading
-          beforeImg.addEventListener('load', () => {
-            beforeImg.classList.add('img-loaded');
+          afterImg.addEventListener('load', () => {
+            // Remove skeleton pulse animation
+            card.classList.remove('loading');
+            card.style.minHeight = 'auto'; // Let the real image dictate height
+            card.style.animationDelay = `${index * 40}ms`;
+            card.classList.add('loaded');
+
+            // Trigger the cinematic de-blur and fade-in
+            afterImg.style.opacity = '1';
+            afterImg.style.filter = 'blur(0px)';
+            afterImg.style.transform = 'scale(1)';
+            
+            // Prep the before image so it's sharp when toggled
+            beforeImg.style.filter = 'blur(0px)';
+            beforeImg.style.transform = 'scale(1)';
+
+            // Reset transition to normal speed for snappy tapping AFTER the load animation finishes
+            setTimeout(() => {
+              afterImg.style.transition = 'opacity 0.25s ease-in-out';
+              beforeImg.style.transition = 'opacity 0.25s ease-in-out';
+            }, 800);
+
           }, { once: true });
 
-          afterImg.addEventListener('load', () => {
-            afterImg.classList.add('img-loaded');
-            // Adding a slight delay to the stagger so it looks organized
-            card.style.animationDelay = `${index * 40}ms`; 
+          afterImg.addEventListener('error', () => {
+            card.classList.remove('loading');
           }, { once: true });
 
           let showingAfter = true;

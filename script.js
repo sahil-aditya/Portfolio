@@ -1,6 +1,6 @@
 /**
  * SAM — Photographer & Colorist 
- * Main JavaScript File
+ * Premium High-Performance JavaScript
  */
 
 // ==========================================
@@ -20,11 +20,8 @@ document.addEventListener('click', playUiSound);
 // 2. Touch Meteor Effect
 // ==========================================
 const touchMeteor = document.getElementById('touchMeteor');
-let meteorX = window.innerWidth * 0.5;
-let meteorY = window.innerHeight * 0.5;
-let targetX = meteorX;
-let targetY = meteorY;
-let lastTouchPoint = null;
+let meteorX = window.innerWidth * 0.5, meteorY = window.innerHeight * 0.5;
+let targetX = meteorX, targetY = meteorY, lastTouchPoint = null;
 
 const animateMeteor = () => {
   meteorX += (targetX - meteorX) * 0.28;
@@ -41,7 +38,6 @@ const updateTouchPoint = (x, y) => {
   targetX = x; targetY = y; lastTouchPoint = { x, y };
   if (touchMeteor) touchMeteor.classList.add('active');
 };
-
 const hideTouchMeteor = () => { 
   lastTouchPoint = null; 
   if (touchMeteor) touchMeteor.classList.remove('active'); 
@@ -79,7 +75,7 @@ document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
 
 // ==========================================
-// 4. Staggered Gallery Loader & Dual-Image Logic
+// 4. Ultra-Fast Parallel Gallery Loader
 // ==========================================
 const FALLBACK_RATIO = 0.72; 
 const gallery = document.getElementById('gallery'); 
@@ -90,9 +86,7 @@ async function loadGallery() {
 
   try {
     const response = await fetch('images.json');
-    if (!response.ok) {
-      throw new Error(`Failed to load images.json: ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`Failed to load images.json: ${response.status}`);
 
     const data = await response.json();
     const galleryData = Array.isArray(data.gallery) ? data.gallery : [];
@@ -103,13 +97,11 @@ async function loadGallery() {
   }
 }
 
-async function renderGallery(galleryData) {
+function renderGallery(galleryData) {
   gallery.innerHTML = '';
 
-  // Setup masonry columns for desktop
   const leftCol = document.createElement('div');
   leftCol.className = 'masonry-col';
-  
   const rightCol = document.createElement('div');
   rightCol.className = 'masonry-col';
 
@@ -117,14 +109,16 @@ async function renderGallery(galleryData) {
   gallery.appendChild(rightCol);
 
   galleryData.forEach((item, index) => {
-    // Skip invalid entries smoothly
     if (!item.beforeImage || !item.afterImage) return;
+
+    // Identify top row items for max priority loading
+    const isTopRow = index < 2; 
 
     const card = document.createElement('article');
     card.className = 'card loading';
     card.setAttribute('tabindex', '0');
     card.style.aspectRatio = `${FALLBACK_RATIO}`;
-    card.style.order = index; // Forces sequential 1,2,3,4 stack on mobile
+    card.style.order = index; // CSS Flexbox handles the mobile stacking order perfectly
 
     const frame = document.createElement('div');
     frame.className = 'card-inner';
@@ -134,16 +128,31 @@ async function renderGallery(galleryData) {
 
     const baseImgStyles = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);';
 
+    // Before Image setup
     const beforeImg = document.createElement('img');
+    beforeImg.src = item.beforeImage; // Direct src injection (no dataset waiting)
     beforeImg.alt = `Raw visual ${index + 1}`;
     beforeImg.className = 'before-img';
     beforeImg.style.cssText = baseImgStyles;
+    beforeImg.loading = 'lazy'; // Always lazy load the 'before' image since it's hidden initially
+    beforeImg.decoding = 'async'; // Prevents heavy rendering from freezing the page
 
+    // After Image setup
     const afterImg = document.createElement('img');
+    afterImg.src = item.afterImage; // Direct src injection
     afterImg.alt = `Gallery image ${index + 1}`;
     afterImg.className = 'after-img';
     afterImg.style.cssText = baseImgStyles;
     afterImg.style.zIndex = '1';
+    afterImg.decoding = 'async';
+
+    // PREMIUM PERFORMANCE: Force the top 2 cards to load instantly, lazy load the rest
+    if (isTopRow) {
+      afterImg.loading = 'eager';
+      afterImg.setAttribute('fetchpriority', 'high');
+    } else {
+      afterImg.loading = 'lazy';
+    }
 
     let showingAfter = true;
     const toggleImage = () => {
@@ -154,38 +163,22 @@ async function renderGallery(galleryData) {
 
     card.addEventListener('click', toggleImage);
     card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        toggleImage();
-      }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleImage(); }
     });
 
     if (viewerNote) {
-      card.addEventListener('mouseenter', () => { viewerNote.style.display = 'block'; });
-      card.addEventListener('mouseleave', () => { viewerNote.style.display = 'none'; });
+      card.addEventListener('mouseenter', () => viewerNote.style.display = 'block');
+      card.addEventListener('mouseleave', () => viewerNote.style.display = 'none');
     }
 
-    frame.appendChild(beforeImg);
-    frame.appendChild(afterImg);
-    card.appendChild(frame);
-
-    // Distribute left/right for desktop
-    if (index % 2 === 0) {
-      leftCol.appendChild(card);
-    } else {
-      rightCol.appendChild(card);
-    }
-
-    // --- Success Handler ---
+    // --- Onload Logic (Cinematic Deblur applied instantly upon natural load) ---
     afterImg.onload = () => {
       card.classList.remove('loading');
       
       if (afterImg.naturalWidth && afterImg.naturalHeight) {
-        const ratio = afterImg.naturalWidth / afterImg.naturalHeight;
-        card.style.aspectRatio = `${ratio}`;
+        card.style.aspectRatio = `${afterImg.naturalWidth / afterImg.naturalHeight}`;
       }
 
-      // Cinematic De-blur Reveal
       afterImg.style.opacity = '1';
       afterImg.style.filter = 'blur(0px)';
       afterImg.style.transform = 'scale(1)';
@@ -198,7 +191,6 @@ async function renderGallery(galleryData) {
       }, 800);
     };
 
-    // --- Error Handler Fix ---
     afterImg.onerror = () => {
       card.classList.remove('loading');
       afterImg.style.opacity = '1';
@@ -207,12 +199,13 @@ async function renderGallery(galleryData) {
       afterImg.alt = "Image failed to load";
     };
 
-    // --- Staggered Network Requests ---
-    // Initiates downloads one after the other with a 150ms gap
-    setTimeout(() => {
-      beforeImg.src = item.beforeImage;
-      afterImg.src = item.afterImage;
-    }, index * 150); 
+    frame.appendChild(beforeImg);
+    frame.appendChild(afterImg);
+    card.appendChild(frame);
+
+    // Distribute left/right for desktop masonry layout
+    if (index % 2 === 0) leftCol.appendChild(card);
+    else rightCol.appendChild(card);
   });
 }
 

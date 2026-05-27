@@ -159,56 +159,35 @@
           card.setAttribute('tabindex', '0');
 
           card.innerHTML = `
-            <img src="${item.afterImage}" alt="Edited visual ${item.id}" loading="lazy" decoding="async" fetchpriority="low" />
+            <div style="position: relative; width: 100%; height: 100%;">
+              <img src="${item.beforeImage}" class="before-img" alt="Raw visual ${item.id}" loading="lazy" decoding="async" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.25s ease-in-out;" />
+              <img src="${item.afterImage}" class="after-img" alt="Edited visual ${item.id}" loading="lazy" decoding="async" fetchpriority="low" style="position: relative; z-index: 1; width: 100%; height: auto; object-fit: cover; transition: opacity 0.25s ease-in-out;" />
+            </div>
           `;
 
-          const image = card.querySelector('img');
-          const preloadPair = () => {
-            [item.afterImage, item.beforeImage].forEach((src) => {
-              if (!src) return;
-              const preloader = new Image();
-              preloader.decoding = 'async';
-              preloader.src = src;
-            });
-          };
+          const beforeImg = card.querySelector('.before-img');
+          const afterImg = card.querySelector('.after-img');
 
-          image.addEventListener('load', () => {
+          afterImg.addEventListener('load', () => {
             card.classList.remove('loading');
             card.style.animationDelay = `${index * 40}ms`;
             card.classList.add('loaded');
-            preloadPair();
           }, { once: true });
 
-
           let showingAfter = true;
+          
           const toggleImage = () => {
-            card.classList.add('fade-switch');
-            setTimeout(() => {
-              showingAfter = !showingAfter;
-              image.src = showingAfter ? item.afterImage : item.beforeImage;
-            }, 220);
+            showingAfter = !showingAfter;
+            if (showingAfter) {
+              afterImg.style.opacity = '1';
+              beforeImg.style.opacity = '0';
+            } else {
+              afterImg.style.opacity = '0';
+              beforeImg.style.opacity = '1';
+            }
           };
 
-          image.addEventListener('error', () => {
-            if (image.dataset.failedToggle === 'true') {
-              card.remove();
-              return;
-            }
-
-            image.dataset.failedToggle = 'true';
-            showingAfter = !showingAfter;
-            image.src = showingAfter ? item.afterImage : item.beforeImage;
-            card.classList.remove('fade-switch');
-          });
-
-          image.addEventListener('load', () => {
-            card.classList.remove('fade-switch');
-          });
-
           card.addEventListener('click', toggleImage);
-          card.addEventListener('pointerenter', preloadPair, { passive: true });
-          card.addEventListener('focus', preloadPair, { passive: true });
-          card.addEventListener('touchstart', preloadPair, { passive: true });
 
           card.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
@@ -238,4 +217,5 @@
     loadGallery();
   </script>
 </body>
-</html>
+  </html>
+  

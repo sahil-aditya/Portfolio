@@ -15,14 +15,15 @@
   <meta name="twitter:title" content="SAM — Photographer • Colorist • Visual Storyteller" />
   <meta name="twitter:description" content="I'm a Colorist and Photographer, transforming visuals through professional color grading to create rich, cinematic frames with emotional depth." />
   <meta name="twitter:image" content="https://sahil-aditya.github.io/Creative_Gallery/images/icon.png" />
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&family=Syne:wght@500;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   
   <style>
-    /* 1. Structural CSS for Desktop 1-2, 3-4 Order */
-    #galleryGrid.masonry {
+    /* Desktop 1-2, 3-4 Order */
+    #gallery.masonry {
       display: flex;
       gap: 1.5rem;
       align-items: flex-start;
@@ -37,23 +38,21 @@
       width: calc(50% - 0.75rem);
     }
 
-    /* 2. Structural CSS for Mobile 1, 2, 3, 4 Order */
+    /* Mobile 1, 2, 3, 4 Order */
     @media (max-width: 768px) {
-      #galleryGrid.masonry {
-        flex-direction: column; /* Stacks everything vertically */
+      #gallery.masonry {
+        flex-direction: column;
       }
-      
       .masonry-col {
-        display: contents; /* MAGIC: This "unwraps" the columns so the cards become direct children of the flex grid */
+        display: contents; 
       }
-
-      .gallery-item {
-        width: 100%; /* Ensures cards stretch full width on mobile */
+      .card {
+        width: 100%; 
       }
     }
 
-    /* 3. Skeleton Loading State */
-    .gallery-item.loading {
+    /* Skeleton Loading State */
+    .card.loading {
       min-height: 350px;
       background: rgba(255, 255, 255, 0.03);
       border-radius: 4px;
@@ -122,12 +121,13 @@
     </div>
   </section>
 
-  <section class="gallery section" id="gallery">
+  <section class="gallery section" id="gallery-section">
     <h2 class="reveal">Before / After Gallery</h2>
-    <div id="galleryGrid" class="masonry"></div>
+    <div id="gallery" class="masonry"></div>
   </section>
 
   <div class="floating-toggle-hint glass" aria-hidden="true">Tap images to switch Graded↕RAW</div>
+  <div id="viewerNote" style="display: none;" class="viewer-note glass">Hovering over image...</div>
 
   <footer class="footer section reveal">
     <p class="signature">SAM — Light. Tone. Emotion.</p>
@@ -135,174 +135,6 @@
     <p class="footer-note">𝒊. Not every image here is clicked by me. Some are non-copyright images used only to demonstrate my color grading skills</p>
   </footer>
 
-  <script>
-    // --- UI Click Sound Effect ---
-    const clickAudio = new Audio('https://sahil-aditya.github.io/Creative_Gallery/images/click.mp3');
-    clickAudio.preload = 'auto'; 
-
-    const playUiSound = () => {
-      const soundClone = clickAudio.cloneNode();
-      soundClone.play().catch(error => console.warn('Audio blocked:', error));
-    };
-    document.addEventListener('click', playUiSound);
-
-    // --- Meteor Effect ---
-    const touchMeteor = document.getElementById('touchMeteor');
-    let meteorX = window.innerWidth * 0.5, meteorY = window.innerHeight * 0.5;
-    let targetX = meteorX, targetY = meteorY, lastTouchPoint = null;
-
-    const animateMeteor = () => {
-      meteorX += (targetX - meteorX) * 0.28;
-      meteorY += (targetY - meteorY) * 0.28;
-      touchMeteor.style.left = `${meteorX}px`;
-      touchMeteor.style.top = `${meteorY}px`;
-      requestAnimationFrame(animateMeteor);
-    };
-    animateMeteor();
-
-    const updateTouchPoint = (x, y) => {
-      targetX = x; targetY = y; lastTouchPoint = { x, y };
-      touchMeteor.classList.add('active');
-    };
-    const hideTouchMeteor = () => { lastTouchPoint = null; touchMeteor.classList.remove('active'); };
-
-    document.addEventListener('touchstart', (e) => { if (e.touches[0]) updateTouchPoint(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-    document.addEventListener('touchmove', (e) => { if (e.touches[0]) updateTouchPoint(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-    document.addEventListener('touchend', hideTouchMeteor, { passive: true });
-    document.addEventListener('touchcancel', hideTouchMeteor, { passive: true });
-    document.addEventListener('scroll', () => { if (lastTouchPoint) updateTouchPoint(lastTouchPoint.x, lastTouchPoint.y); }, { passive: true });
-
-    const sanitizeSocialLinks = () => {
-      document.querySelectorAll('[data-social-link]').forEach((link) => {
-        const href = (link.getAttribute('href') || '').trim();
-        if (!href || href === '#' || href.toLowerCase() === 'null' || href.toLowerCase() === 'undefined') {
-          link.style.display = 'none';
-        }
-      });
-    };
-
-    // --- Core Gallery Logic ---
-    const galleryGrid = document.getElementById('galleryGrid');
-
-    async function loadGallery() {
-      try {
-        const response = await fetch('./images.json');
-        const data = await response.json();
-        const items = data.gallery || [];
-
-        // Setup Columns
-        const leftCol = document.createElement('div');
-        leftCol.className = 'masonry-col';
-        const rightCol = document.createElement('div');
-        rightCol.className = 'masonry-col';
-        
-        galleryGrid.appendChild(leftCol);
-        galleryGrid.appendChild(rightCol);
-
-        const sequentialQueue = [];
-
-        // Build DOM Skeletons First (Instantly fills the screen)
-        items.forEach((item, index) => {
-          if (!item.beforeImage || !item.afterImage) return; 
-
-          const card = document.createElement('article');
-          card.className = 'gallery-item loading';
-          card.setAttribute('tabindex', '0');
-          card.style.order = index; // This enforces correct 1,2,3,4 ordering on mobile stacked layout
-
-          // Notice: 'src' is changed to 'data-src'. This stops parallel downloading.
-          card.innerHTML = `
-            <div style="position: relative; width: 100%; height: 100%;">
-              <img data-src="${item.beforeImage}" class="before-img" alt="Raw visual ${item.id}" decoding="async" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);" />
-              
-              <img data-src="${item.afterImage}" class="after-img" alt="Edited visual ${item.id}" decoding="async" fetchpriority="low" style="position: relative; z-index: 1; width: 100%; height: auto; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);" />
-            </div>
-          `;
-
-          const beforeImg = card.querySelector('.before-img');
-          const afterImg = card.querySelector('.after-img');
-
-          let showingAfter = true;
-          const toggleImage = () => {
-            showingAfter = !showingAfter;
-            afterImg.style.opacity = showingAfter ? '1' : '0';
-            beforeImg.style.opacity = showingAfter ? '0' : '1';
-          };
-
-          card.addEventListener('click', toggleImage);
-          card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleImage(); } });
-
-          // Drop alternating cards into Left / Right columns for desktop
-          if (index % 2 === 0) leftCol.appendChild(card);
-          else rightCol.appendChild(card);
-
-          sequentialQueue.push({ card, beforeImg, afterImg });
-        });
-
-        // Execute Sequential Loading 
-        for (const [index, { card, beforeImg, afterImg }] of sequentialQueue.entries()) {
-          await new Promise((resolve) => {
-            
-            // Soft Timeout: If image takes longer than 4 seconds, move to the next item so the queue doesn't stall.
-            // The slow image WILL keep loading in the background.
-            const timeoutFallback = setTimeout(() => {
-              resolve(); 
-            }, 4000);
-
-            const handleCompletion = () => {
-              clearTimeout(timeoutFallback);
-              resolve();
-            };
-
-            afterImg.onload = () => {
-              card.classList.remove('loading');
-              card.style.minHeight = 'auto'; 
-              card.classList.add('loaded');
-
-              // De-blur and fade in
-              afterImg.style.opacity = '1';
-              afterImg.style.filter = 'blur(0px)';
-              afterImg.style.transform = 'scale(1)';
-              beforeImg.style.filter = 'blur(0px)';
-              beforeImg.style.transform = 'scale(1)';
-
-              // Reset transition speed for snappy taps
-              setTimeout(() => {
-                afterImg.style.transition = 'opacity 0.25s ease-in-out';
-                beforeImg.style.transition = 'opacity 0.25s ease-in-out';
-              }, 800);
-              
-              handleCompletion();
-            };
-
-            afterImg.onerror = () => {
-              card.classList.remove('loading'); // Just stop the pulse, leave the card.
-              handleCompletion();
-            };
-
-            // Trigger the actual network request
-            beforeImg.src = beforeImg.getAttribute('data-src');
-            afterImg.src = afterImg.getAttribute('data-src');
-          });
-        }
-      } catch (error) {
-        galleryGrid.innerHTML = '<p class="error">Unable to load gallery at the moment.</p>';
-      }
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-    sanitizeSocialLinks();
-    loadGallery();
-  </script>
+  <script src="script.js"></script>
 </body>
-        </html>
-  
+</html>

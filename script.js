@@ -1,6 +1,6 @@
 /**
  * SAM — Photographer & Colorist 
- * Main JavaScript File
+ * Premium High-Performance JavaScript
  */
 
 // ==========================================
@@ -75,7 +75,7 @@ document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
 
 // ==========================================
-// 4. Standard Browser Gallery Loader
+// 4. Premium Background Gallery Loader
 // ==========================================
 const FALLBACK_RATIO = 0.72; 
 const gallery = document.getElementById('gallery'); 
@@ -111,11 +111,14 @@ function renderGallery(galleryData) {
   galleryData.forEach((item, index) => {
     if (!item.beforeImage || !item.afterImage) return;
 
+    // Prioritize the first 18 images
+    const isPriority = index < 18; 
+
     const card = document.createElement('article');
     card.className = 'card loading';
     card.setAttribute('tabindex', '0');
     card.style.aspectRatio = `${FALLBACK_RATIO}`;
-    card.style.order = index; // Flexbox handles mobile stacking perfectly
+    card.style.order = index; 
 
     const frame = document.createElement('div');
     frame.className = 'card-inner';
@@ -125,22 +128,29 @@ function renderGallery(galleryData) {
 
     const baseImgStyles = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);';
 
-    // Standard Before Image setup
     const beforeImg = document.createElement('img');
     beforeImg.src = item.beforeImage; 
     beforeImg.alt = `Raw visual ${index + 1}`;
     beforeImg.className = 'before-img';
     beforeImg.style.cssText = baseImgStyles;
-    beforeImg.loading = 'lazy'; // Standard native lazy loading
+    beforeImg.decoding = 'async'; 
 
-    // Standard After Image setup
     const afterImg = document.createElement('img');
     afterImg.src = item.afterImage; 
     afterImg.alt = `Gallery image ${index + 1}`;
     afterImg.className = 'after-img';
     afterImg.style.cssText = baseImgStyles;
     afterImg.style.zIndex = '1';
-    afterImg.loading = 'lazy'; // Standard native lazy loading
+    afterImg.decoding = 'async';
+
+    // No lazy loading. High priority for top 18, background downloading for the rest.
+    if (isPriority) {
+      afterImg.setAttribute('fetchpriority', 'high');
+      beforeImg.setAttribute('fetchpriority', 'high');
+    } else {
+      afterImg.setAttribute('fetchpriority', 'low');
+      beforeImg.setAttribute('fetchpriority', 'low');
+    }
 
     let showingAfter = true;
     const toggleImage = () => {
@@ -159,7 +169,6 @@ function renderGallery(galleryData) {
       card.addEventListener('mouseleave', () => viewerNote.style.display = 'none');
     }
 
-    // Unhide the image naturally when the browser finishes downloading it
     afterImg.onload = () => {
       card.classList.remove('loading');
       
@@ -179,7 +188,6 @@ function renderGallery(galleryData) {
       }, 800);
     };
 
-    // Standard error fallback
     afterImg.onerror = () => {
       card.classList.remove('loading');
       afterImg.style.opacity = '1';
@@ -192,11 +200,26 @@ function renderGallery(galleryData) {
     frame.appendChild(afterImg);
     card.appendChild(frame);
 
-    // Distribute evenly for desktop masonry
     if (index % 2 === 0) leftCol.appendChild(card);
     else rightCol.appendChild(card);
   });
 }
 
-// Boot up gallery
 loadGallery();
+
+
+// ==========================================
+// 5. Aggressive Local Caching (Service Worker)
+// ==========================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(registration => {
+        console.log('Premium Caching Enabled:', registration.scope);
+      })
+      .catch(error => {
+        console.log('Caching failed:', error);
+      });
+  });
+    }
+    

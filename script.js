@@ -1,93 +1,9 @@
-/**
- * SAM — Photographer & Colorist 
- * Main JavaScript File
- */
+const FALLBACK_RATIO = 0.72; // Assumes a standard portrait dimension width/height
 
-// ==========================================
-// 1. UI Click Sound Effect
-// ==========================================
-const clickAudio = new Audio('https://sahil-aditya.github.io/Creative_Gallery/images/click.mp3');
-clickAudio.preload = 'auto'; 
-
-const playUiSound = () => {
-  const soundClone = clickAudio.cloneNode();
-  soundClone.play().catch(error => console.warn('Audio blocked by browser autoplay policy:', error));
-};
-document.addEventListener('click', playUiSound);
-
-
-// ==========================================
-// 2. Touch Meteor Effect
-// ==========================================
-const touchMeteor = document.getElementById('touchMeteor');
-let meteorX = window.innerWidth * 0.5;
-let meteorY = window.innerHeight * 0.5;
-let targetX = meteorX;
-let targetY = meteorY;
-let lastTouchPoint = null;
-
-const animateMeteor = () => {
-  meteorX += (targetX - meteorX) * 0.28;
-  meteorY += (targetY - meteorY) * 0.28;
-  if (touchMeteor) {
-    touchMeteor.style.left = `${meteorX}px`;
-    touchMeteor.style.top = `${meteorY}px`;
-  }
-  requestAnimationFrame(animateMeteor);
-};
-animateMeteor();
-
-const updateTouchPoint = (x, y) => {
-  targetX = x; targetY = y; lastTouchPoint = { x, y };
-  if (touchMeteor) touchMeteor.classList.add('active');
-};
-
-const hideTouchMeteor = () => { 
-  lastTouchPoint = null; 
-  if (touchMeteor) touchMeteor.classList.remove('active'); 
-};
-
-document.addEventListener('touchstart', (e) => { if (e.touches[0]) updateTouchPoint(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-document.addEventListener('touchmove', (e) => { if (e.touches[0]) updateTouchPoint(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-document.addEventListener('touchend', hideTouchMeteor, { passive: true });
-document.addEventListener('touchcancel', hideTouchMeteor, { passive: true });
-document.addEventListener('scroll', () => { if (lastTouchPoint) updateTouchPoint(lastTouchPoint.x, lastTouchPoint.y); }, { passive: true });
-
-
-// ==========================================
-// 3. Social Links Sanitizer & Scroll Reveal
-// ==========================================
-const sanitizeSocialLinks = () => {
-  document.querySelectorAll('[data-social-link]').forEach((link) => {
-    const href = (link.getAttribute('href') || '').trim();
-    if (!href || href === '#' || href.toLowerCase() === 'null' || href.toLowerCase() === 'undefined') {
-      link.style.display = 'none';
-    }
-  });
-};
-sanitizeSocialLinks();
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.2 });
-document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-
-
-// ==========================================
-// 4. Sequential Gallery Loader & Dual-Image Logic
-// ==========================================
-const FALLBACK_RATIO = 0.72; 
 const gallery = document.getElementById('gallery'); 
 const viewerNote = document.getElementById('viewerNote');
 
 async function loadGallery() {
-  if (!gallery) return; // Guard clause if element doesn't exist
-
   try {
     const response = await fetch('images.json');
     if (!response.ok) {
@@ -104,8 +20,10 @@ async function loadGallery() {
 }
 
 async function renderGallery(galleryData) {
+  // Clear out any existing content
   gallery.innerHTML = '';
 
+  // 1. Create Left/Right columns for Desktop Masonry
   const leftCol = document.createElement('div');
   leftCol.className = 'masonry-col';
   
@@ -117,14 +35,16 @@ async function renderGallery(galleryData) {
 
   const sequentialQueue = [];
 
+  // 2. Build the DOM nodes and assign classes (Instantly creates skeletons)
   galleryData.forEach((item, index) => {
+    // Soft error check: skip if data is completely missing
     if (!item.beforeImage || !item.afterImage) return;
 
     const card = document.createElement('article');
     card.className = 'card loading';
     card.setAttribute('tabindex', '0');
     card.style.aspectRatio = `${FALLBACK_RATIO}`;
-    card.style.order = index; // Mobile layout ordering
+    card.style.order = index; // Ensures mobile flex layout stacks 1, 2, 3, 4 properly
 
     const frame = document.createElement('div');
     frame.className = 'card-inner';
@@ -132,10 +52,11 @@ async function renderGallery(galleryData) {
     frame.style.width = '100%';
     frame.style.height = '100%';
 
+    // Inject Dual-Image for smooth cinematic toggling without network delays
     const baseImgStyles = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);';
 
     const beforeImg = document.createElement('img');
-    beforeImg.dataset.src = item.beforeImage; 
+    beforeImg.dataset.src = item.beforeImage; // data-src used for lazy load
     beforeImg.alt = `Raw visual ${index + 1}`;
     beforeImg.className = 'before-img';
     beforeImg.style.cssText = baseImgStyles;
@@ -147,6 +68,7 @@ async function renderGallery(galleryData) {
     afterImg.style.cssText = baseImgStyles;
     afterImg.style.zIndex = '1';
 
+    // Click/Keydown Logic
     let showingAfter = true;
     const toggleImage = () => {
       showingAfter = !showingAfter;
@@ -162,28 +84,37 @@ async function renderGallery(galleryData) {
       }
     });
 
+    // Viewer Note Logic
     if (viewerNote) {
-      card.addEventListener('mouseenter', () => { viewerNote.style.display = 'block'; });
-      card.addEventListener('mouseleave', () => { viewerNote.style.display = 'none'; });
+      card.addEventListener('mouseenter', () => {
+        viewerNote.style.display = 'block';
+      });
+      card.addEventListener('mouseleave', () => {
+        viewerNote.style.display = 'none';
+      });
     }
 
+    // Append images to frame, frame to card
     frame.appendChild(beforeImg);
     frame.appendChild(afterImg);
     card.appendChild(frame);
 
+    // Alternate sorting into columns
     if (index % 2 === 0) {
       leftCol.appendChild(card);
     } else {
       rightCol.appendChild(card);
     }
 
+    // Push into sequence queue for waterfall loading
     sequentialQueue.push({ card, beforeImg, afterImg });
   });
 
-  // Execute sequence
+  // 3. Execute Sequential Loading
   for (const { card, beforeImg, afterImg } of sequentialQueue) {
     await new Promise((resolve) => {
       
+      // The 4-Second Failsafe Timeout
       const timeoutFallback = setTimeout(() => {
         resolve(); 
       }, 4000);
@@ -196,17 +127,20 @@ async function renderGallery(galleryData) {
       afterImg.onload = () => {
         card.classList.remove('loading');
         
+        // Dynamic Aspect Ratio Calculation
         if (afterImg.naturalWidth && afterImg.naturalHeight) {
           const ratio = afterImg.naturalWidth / afterImg.naturalHeight;
           card.style.aspectRatio = `${ratio}`;
         }
 
+        // Cinematic De-blur Reveal
         afterImg.style.opacity = '1';
         afterImg.style.filter = 'blur(0px)';
         afterImg.style.transform = 'scale(1)';
         beforeImg.style.filter = 'blur(0px)';
         beforeImg.style.transform = 'scale(1)';
 
+        // Reset transition to normal speed for responsive tapping
         setTimeout(() => {
           afterImg.style.transition = 'opacity 0.25s ease-in-out';
           beforeImg.style.transition = 'opacity 0.25s ease-in-out';
@@ -220,12 +154,13 @@ async function renderGallery(galleryData) {
         handleCompletion();
       };
 
+      // Trigger the download by moving data-src to src
       beforeImg.src = beforeImg.dataset.src;
       afterImg.src = afterImg.dataset.src;
     });
   }
 }
 
-// Boot up gallery
+// Initialize
 loadGallery();
-      
+                      

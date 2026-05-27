@@ -88,41 +88,25 @@
   </footer>
 
   <script>
-    /* ─────────────────────────────────────────────
-       CLICK SOUND EFFECT
-       Uses the 'click' event — fires on intentional
-       tap/click only. Never triggers on scroll or swipe.
-    ───────────────────────────────────────────── */
+    // --- UI Click Sound Effect ---
     const clickAudio = new Audio('https://sahil-aditya.github.io/Creative_Gallery/images/click.mp3');
-    clickAudio.preload = 'auto';
+    clickAudio.preload = 'auto'; // Preload the audio for instant playback
 
-    // Track if a touch moved (swipe/scroll) — if yes, suppress the click sound
-    let touchMoved = false;
-
-    document.addEventListener('touchstart', () => {
-      touchMoved = false;
-    }, { passive: true });
-
-    document.addEventListener('touchmove', () => {
-      touchMoved = true;
-    }, { passive: true });
-
-    document.addEventListener('click', () => {
-      // If touch moved (scroll/swipe), skip the sound
-      if (touchMoved) return;
-
-      // Clone allows rapid back-to-back taps to overlap cleanly
-      const sound = clickAudio.cloneNode();
-      sound.volume = 1.0;
-      sound.play().catch(() => {
-        // Browser autoplay policy — silently ignored,
-        // sound will work after first user gesture anyway
+    const playUiSound = () => {
+      // Using cloneNode() ensures rapid taps overlap seamlessly instead of cutting off
+      const soundClone = clickAudio.cloneNode();
+      soundClone.play().catch(error => {
+        // Silently catch autoplay policy restrictions if they occur before user interaction
+        console.warn('Audio playback blocked by browser:', error);
       });
-    });
+    };
 
-    /* ─────────────────────────────────────────────
-       TOUCH METEOR
-    ───────────────────────────────────────────── */
+    // The 'click' event inherently fires on desktop mouse clicks and mobile taps.
+    // It purposefully does NOT fire on touch scroll/swipe interactions.
+    document.addEventListener('click', playUiSound);
+
+
+    // --- Existing Functionality ---
     const galleryGrid = document.getElementById('galleryGrid');
     const touchMeteor = document.getElementById('touchMeteor');
     let meteorX = window.innerWidth * 0.5;
@@ -170,9 +154,7 @@
       }
     }, { passive: true });
 
-    /* ─────────────────────────────────────────────
-       SOCIAL LINKS
-    ───────────────────────────────────────────── */
+
     const sanitizeSocialLinks = () => {
       document.querySelectorAll('[data-social-link]').forEach((link) => {
         const href = (link.getAttribute('href') || '').trim();
@@ -183,9 +165,6 @@
       });
     };
 
-    /* ─────────────────────────────────────────────
-       GALLERY LOADER
-    ───────────────────────────────────────────── */
     async function loadGallery() {
       try {
         const response = await fetch('./images.json');
@@ -193,8 +172,9 @@
         const items = data.gallery || [];
 
         items.forEach((item, index) => {
+          // Pre-check: Agar dono me se koi bhi link JSON me missing hai toh skip kardo
           if (!item.beforeImage || !item.afterImage) {
-            return;
+            return; 
           }
 
           const card = document.createElement('article');
@@ -211,6 +191,7 @@
           const beforeImg = card.querySelector('.before-img');
           const afterImg = card.querySelector('.after-img');
 
+          // Error Handling: Agar dono me se koi bhi image load hone me fail hui (e.g. 404), toh card remove ho jayega
           const handleImageError = () => {
             card.remove();
           };
@@ -218,6 +199,7 @@
           beforeImg.addEventListener('error', handleImageError);
           afterImg.addEventListener('error', handleImageError);
 
+          // Success Load Handling
           afterImg.addEventListener('load', () => {
             card.classList.remove('loading');
             card.style.animationDelay = `${index * 40}ms`;
@@ -225,7 +207,7 @@
           }, { once: true });
 
           let showingAfter = true;
-
+          
           const toggleImage = () => {
             showingAfter = !showingAfter;
             if (showingAfter) {
@@ -253,9 +235,6 @@
       }
     }
 
-    /* ─────────────────────────────────────────────
-       REVEAL ON SCROLL
-    ───────────────────────────────────────────── */
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -271,3 +250,4 @@
   </script>
 </body>
   </html>
+  

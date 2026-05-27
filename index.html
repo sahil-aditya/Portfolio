@@ -88,25 +88,6 @@
   </footer>
 
   <script>
-    // --- UI Click Sound Effect ---
-    const clickAudio = new Audio('https://sahil-aditya.github.io/Creative_Gallery/images/click.mp3');
-    clickAudio.preload = 'auto'; // Preload the audio for instant playback
-
-    const playUiSound = () => {
-      // Using cloneNode() ensures rapid taps overlap seamlessly instead of cutting off
-      const soundClone = clickAudio.cloneNode();
-      soundClone.play().catch(error => {
-        // Silently catch autoplay policy restrictions if they occur before user interaction
-        console.warn('Audio playback blocked by browser:', error);
-      });
-    };
-
-    // The 'click' event inherently fires on desktop mouse clicks and mobile taps.
-    // It purposefully does NOT fire on touch scroll/swipe interactions.
-    document.addEventListener('click', playUiSound);
-
-
-    // --- Existing Functionality ---
     const galleryGrid = document.getElementById('galleryGrid');
     const touchMeteor = document.getElementById('touchMeteor');
     let meteorX = window.innerWidth * 0.5;

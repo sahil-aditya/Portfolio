@@ -1,6 +1,6 @@
 /**
  * SAM — Photographer & Colorist 
- * Premium High-Performance JavaScript
+ * Main JavaScript File
  */
 
 // ==========================================
@@ -75,7 +75,7 @@ document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
 
 // ==========================================
-// 4. Premium Background Gallery Loader
+// 4. Instant Sequential Gallery Loader
 // ==========================================
 const FALLBACK_RATIO = 0.72; 
 const gallery = document.getElementById('gallery'); 
@@ -111,9 +111,6 @@ function renderGallery(galleryData) {
   galleryData.forEach((item, index) => {
     if (!item.beforeImage || !item.afterImage) return;
 
-    // Prioritize the first 18 images
-    const isPriority = index < 18; 
-
     const card = document.createElement('article');
     card.className = 'card loading';
     card.setAttribute('tabindex', '0');
@@ -129,28 +126,17 @@ function renderGallery(galleryData) {
     const baseImgStyles = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; filter: blur(20px); transform: scale(1.05); transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);';
 
     const beforeImg = document.createElement('img');
-    beforeImg.src = item.beforeImage; 
     beforeImg.alt = `Raw visual ${index + 1}`;
     beforeImg.className = 'before-img';
     beforeImg.style.cssText = baseImgStyles;
     beforeImg.decoding = 'async'; 
 
     const afterImg = document.createElement('img');
-    afterImg.src = item.afterImage; 
     afterImg.alt = `Gallery image ${index + 1}`;
     afterImg.className = 'after-img';
     afterImg.style.cssText = baseImgStyles;
     afterImg.style.zIndex = '1';
     afterImg.decoding = 'async';
-
-    // No lazy loading. High priority for top 18, background downloading for the rest.
-    if (isPriority) {
-      afterImg.setAttribute('fetchpriority', 'high');
-      beforeImg.setAttribute('fetchpriority', 'high');
-    } else {
-      afterImg.setAttribute('fetchpriority', 'low');
-      beforeImg.setAttribute('fetchpriority', 'low');
-    }
 
     let showingAfter = true;
     const toggleImage = () => {
@@ -169,6 +155,7 @@ function renderGallery(galleryData) {
       card.addEventListener('mouseleave', () => viewerNote.style.display = 'none');
     }
 
+    // --- Success Handler ---
     afterImg.onload = () => {
       card.classList.remove('loading');
       
@@ -188,7 +175,19 @@ function renderGallery(galleryData) {
       }, 800);
     };
 
+    // --- Auto-Retry Failsafe ---
+    let retryCount = 0;
     afterImg.onerror = () => {
+      if (retryCount < 2) {
+        retryCount++;
+        // If the browser drops the connection, try again 1.5s later
+        setTimeout(() => {
+          afterImg.src = item.afterImage;
+          beforeImg.src = item.beforeImage;
+        }, 1500);
+        return; 
+      }
+      
       card.classList.remove('loading');
       afterImg.style.opacity = '1';
       afterImg.style.filter = 'blur(0px)';
@@ -202,6 +201,12 @@ function renderGallery(galleryData) {
 
     if (index % 2 === 0) leftCol.appendChild(card);
     else rightCol.appendChild(card);
+
+    // --- Instant Execution ---
+    // All images are requested immediately as the loop runs. 
+    // The browser natively prioritizes them by index sequence.
+    beforeImg.src = item.beforeImage;
+    afterImg.src = item.afterImage;
   });
 }
 
@@ -221,5 +226,5 @@ if ('serviceWorker' in navigator) {
         console.log('Caching failed:', error);
       });
   });
-    }
-    
+}
+  
